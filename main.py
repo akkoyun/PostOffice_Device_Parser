@@ -30,12 +30,9 @@ def Device_Parser():
 			Device_IP = Message.headers[3][1].decode('ASCII')
 
 			# Print LOG
-			LOG.Line()
+			LOG.Service_Logger.debug("--------------------------------------------------------------------------------")
 			LOG.Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Message.topic, Message.partition, Message.offset)
-			LOG.Line()
-
-			# LOG
-			print(Kafka_Message)
+			LOG.Service_Logger.debug("--------------------------------------------------------------------------------")
 
 			# Declare Variables
 			class DB_Variables:
@@ -56,10 +53,10 @@ def Device_Parser():
 			DB_Module = Database.SessionLocal()
 
 			# Database Query
-			IoT_Module_Query = DB_Module.query(Models.Module).filter(Models.Module.Device_ID.like(Device_ID)).first()
-
+			Query_Module = DB_Module.query(Models.Module).filter(Models.Module.Device_ID.like(Device_ID)).first()
+			print(Query_Module)
 			# Handle Record
-			if not IoT_Module_Query:
+			if not Query_Module:
 
 				# Create Add Record Command
 				New_Module = Models.Module(Device_ID = Device_ID)
