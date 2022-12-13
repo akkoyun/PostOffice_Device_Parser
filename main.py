@@ -39,6 +39,8 @@ def Device_Parser():
 			class Variables:
 				Module_ID = 0		# Module ID 
 
+			# ------------------------------------------
+
 			# Define DB
 			DB_Module = Database.SessionLocal()
 
@@ -73,6 +75,7 @@ def Device_Parser():
 			# Close Database
 			DB_Module.close()
 
+			# ------------------------------------------
 
 
 
