@@ -14,12 +14,6 @@ Kafka_Consumer = KafkaConsumer('Device', bootstrap_servers=f"{APP_Settings.POSTO
 # Boot Log Message
 LOG.Service_Start()
 
-def index(a_list, value):
-    try:
-        return a_list.index(value)
-    except ValueError:
-        return None
-
 # Parser Function
 def Device_Parser():
 
@@ -74,8 +68,7 @@ def Device_Parser():
 			else:
 
 				# Set Variable
-				Module_Array = list(Query_Module.__dict__.items()).remove('Device_ID')
-				print(Module_Array)
+				Variables.Module_ID = np.array(list(Query_Module.__dict__.items()))[5,1]
 
 				# LOG
 				LOG.Service_Logger.warning(f"Module allready recorded [{Variables.Module_ID}], bypassing...")
