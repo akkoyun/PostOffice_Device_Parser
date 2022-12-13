@@ -228,7 +228,7 @@ def Device_Parser():
 				DB_Location.refresh(New_IoT_Location_Post)
 
 				# LOG
-				LOG.Service_Logger.warning(f"New location detected [{New_IoT_Location_Post.Location_ID}], recording...")
+				LOG.Service_Logger.debug(f"New location detected, recording... [{New_IoT_Location_Post.Location_ID}]")
 
 			else:
 
