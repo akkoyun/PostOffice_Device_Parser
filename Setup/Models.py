@@ -122,8 +122,6 @@ class SIM(Base):
 	Device_ID = Column(String, nullable=False)
 	ICCID = Column(String, nullable=False)
 	Operator_ID = Column(Integer, nullable=False)
-	GSM_Number = Column(String, nullable=True)
-	Static_IP = Column(String, nullable=True)
 	Create_Time = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('now()'))
 
 # Connection Table Model
