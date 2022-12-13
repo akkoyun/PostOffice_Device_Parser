@@ -36,37 +36,40 @@ def Device_Parser():
 			LOG.Line()
 
 			# Handle Version
-			if Kafka_Message.Firmware != None and Kafka_Message.Hardware != None:
+			if Kafka_Message.Info.Firmware != None and Kafka_Message.Info.Hardware != None:
 
 				# Database Query
-				Version_Query = db.query(Models.Version).filter(
-					Models.Version.Device_ID.like(Device_ID),
-					Models.Version.Firmware_Version.like(Kafka_Message.Firmware),
-					Models.Version.Hardware_Version.like(Kafka_Message.Hardware)).first()
+#				Version_Query = db.query(Models.Version).filter(
+#					Models.Version.Device_ID.like(Device_ID),
+#					Models.Version.Firmware_Version.like(Kafka_Message.Firmware),
+#					Models.Version.Hardware_Version.like(Kafka_Message.Hardware)).first()
 
 				# Handle Record
-				if Version_Query == None:
+#				if Version_Query == None:
 
 					# Create Add Record Command
-					New_Version_Post = Models.Version(
-						Device_ID = Device_ID, 
-						Hardware_Version = Kafka_Message.Hardware,
-						Firmware_Version = Kafka_Message.Firmware)
+#					New_Version_Post = Models.Version(
+#						Device_ID = Device_ID, 
+#						Hardware_Version = Kafka_Message.Hardware,
+#						Firmware_Version = Kafka_Message.Firmware)
 
 					# Add and Refresh DataBase
-					db = Database.SessionLocal()
-					db.add(New_Version_Post)
-					db.commit()
-					db.refresh(New_Version_Post)
+#					db = Database.SessionLocal()
+#					db.add(New_Version_Post)
+#					db.commit()
+#					db.refresh(New_Version_Post)
 
 					# Log 
-					print("There is no existing record for this device. Adding record : ", New_Version_Post.Version_ID)
+#					print("There is no existing record for this device. Adding record : ", New_Version_Post.Version_ID)
 
 
-				else:
-					print("There is an existing record for this device. Bypassing...")
+#				else:
+#					print("There is an existing record for this device. Bypassing...")
 
-
+				print("OK")
+			
+			else:
+				print("NOK")
 
 
 
