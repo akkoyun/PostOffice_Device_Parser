@@ -195,7 +195,7 @@ def Device_Parser():
 				else:
 
 					# Set Variable
-					for X in np.array(list(Query_Module.__dict__.items())):
+					for X in np.array(list(Query_IoT_Module.__dict__.items())):
 						if X[0] == "Module_ID":
 							Variables.IoT_Module_ID = X[1]
 							break
