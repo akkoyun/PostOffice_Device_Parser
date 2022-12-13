@@ -155,9 +155,9 @@ def Device_Parser():
 					db.commit()
 					db.refresh(New_IoT_Module)
 
-				# Log
-				RecordedMessage = "Detected new IoT module, recording... [" + str(New_IoT_Module.Module_ID) + "]"
-				LOG.Service_Logger.debug(RecordedMessage)
+					# Log
+					RecordedMessage = "Detected new IoT module, recording... [" + str(New_IoT_Module.Module_ID) + "]"
+					LOG.Service_Logger.debug(RecordedMessage)
 			else:
 				LOG.Service_Logger.warning("There is no IoT module data, bypassing...")
 
