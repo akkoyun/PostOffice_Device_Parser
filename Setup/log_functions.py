@@ -36,11 +36,15 @@ ch.setLevel(logging.DEBUG)
 ch.setFormatter(CustomFormatter())
 Service_Logger.addHandler(ch)
 
+# Boot Log
+def LOG_Database_Connect():
+	Service_Logger.info("API Log --> Service Started.")
+
 # Database Log
 def LOG_Database_Connect():
-	Service_Logger.info("API Log --> Connected to Database")
+	Service_Logger.debug("API Log --> Connected to Database")
 def LOG_Database_DisConnect():
-	Service_Logger.info("API Log --> Connection Closed")
+	Service_Logger.debug("API Log --> Connection Closed")
 
 
 
