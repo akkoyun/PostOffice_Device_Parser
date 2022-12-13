@@ -138,6 +138,10 @@ def Device_Parser():
 					Models.IoT_Module.Manufacturer_ID == Kafka_Message.IoT.GSM.Module.Manufacturer,
 					Models.IoT_Module.Model_ID == Kafka_Message.IoT.GSM.Module.Model).first()
 
+				# Refresh DataBase
+				IoT_Module_ID = json.load(IoT_Module_Query)
+				print(IoT_Module_ID)
+
 				# Handle Record
 				if IoT_Module_Query == None:
 
@@ -166,12 +170,11 @@ def Device_Parser():
 
 
 
-			if New_IoT_Module.Module_ID is None:
-				IoT_Module_ID = IoT_Module_Query.Module_ID
-			else:
-				IoT_Module_ID = New_IoT_Module.Module_ID
 
-			print(IoT_Module_ID)
+
+
+
+
 
 
 
