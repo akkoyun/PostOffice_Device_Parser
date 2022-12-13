@@ -140,7 +140,7 @@ def Device_Parser():
 				DB_IMU.refresh(New_IMU)
 
 				# Log 
-				LOG.Service_Logger.debug(f"New IMU data detected [{round(Kafka_Message.Info.Temperature, 2)} C / {round(Kafka_Message.Info.Humidity, 2) %}], recording... [{New_IMU.IMU_ID}]")
+				LOG.Service_Logger.debug(f"New IMU data detected [{round(Kafka_Message.Info.Temperature, 2)} C / {round(Kafka_Message.Info.Humidity, 2)} %], recording... [{New_IMU.IMU_ID}]")
 
 			else:
 
