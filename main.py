@@ -158,6 +158,8 @@ def Device_Parser():
 					# Log
 					RecordedMessage = "Detected new IoT module, recording... [" + str(New_IoT_Module.Module_ID) + "]"
 					LOG.Service_Logger.debug(RecordedMessage)
+				else:
+					LOG.Service_Logger.warning("IoT module allready recorded, bypassing...")
 			else:
 				LOG.Service_Logger.warning("There is no IoT module data, bypassing...")
 
@@ -211,6 +213,8 @@ def Device_Parser():
 					# Log
 					RecordedMessage = "Detected new SIM, recording... [" + str(New_IoT_SIM_Post.SIM_ID) + "]"
 					LOG.Service_Logger.debug(RecordedMessage)
+				else:
+					LOG.Service_Logger.warning("SIM allready recorded, bypassing...")
 			else:
 				LOG.Service_Logger.warning("There is no SIM data, bypassing...")
 
