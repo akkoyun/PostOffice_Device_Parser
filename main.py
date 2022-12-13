@@ -74,8 +74,8 @@ def Device_Parser():
 #			db.close()
 
 			# Commit Message
-#			Kafka_Version_Consumer.commit()
-#
+			Kafka_Consumer.commit()
+
 			print("--------------------------------------------------------------------------------")
 
 
