@@ -2,7 +2,7 @@
 import logging, coloredlogs
 
 # Set Log Options
-logging.basicConfig(filename='Log/Service.LOG', level=logging.INFO, format='%(levelname)s -> %(message)s')
+logging.basicConfig(filename='Log/Service.LOG', level=logging.INFO, format='%(asctime)s - %(message)s')
 Service_Logger = logging.getLogger(__name__)
 
 # Set Log Colored
