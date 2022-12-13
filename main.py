@@ -1,5 +1,5 @@
 # Import Libraries
-from Setup import Database, Schema, Models, log_functions
+from Setup import LOG, Database, Schema, Models
 from Setup.Config import APP_Settings
 from kafka import KafkaConsumer
 import json
@@ -11,7 +11,7 @@ Database.Base.metadata.create_all(bind=Database.DB_Engine)
 Kafka_Consumer = KafkaConsumer('Device', bootstrap_servers=f"{APP_Settings.POSTOFFICE_KAFKA_HOSTNAME}:{APP_Settings.POSTOFFICE_KAFKA_PORT}", group_id="Data_Consumer", auto_offset_reset='earliest', enable_auto_commit=False)
 
 # Boot Log Message
-log_functions.LOG_Service_Start()
+LOG.Service_Start()
 
 # Parser Function
 def Device_Parser():
@@ -31,7 +31,7 @@ def Device_Parser():
 			Device_IP = Message.headers[3][1].decode('ASCII')
 
 			# Print LOG
-			log_functions.Log_Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Message.topic, Message.partition, Message.offset)
+			LOG.Log_Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Message.topic, Message.partition, Message.offset)
 
 			# Print LOG
 			print(Kafka_Message)
