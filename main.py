@@ -36,7 +36,7 @@ def Device_Parser():
 			LOG.Service_Logger.debug("--------------------------------------------------------------------------------")
 
 			# Declare Variables
-			class DB_Variables:
+			class Variables:
 				Module_ID = 0		# Module ID 
 
 
@@ -55,8 +55,7 @@ def Device_Parser():
 
 			# Database Query
 			Query_Module = DB_Module.query(Models.Module).filter(Models.Module.Device_ID.like(Device_ID)).first()
-
-			aa = np.array(list(Query_Module.__dict__.items()))
+			Variables.Module_ID = np.array(list(Query_Module.__dict__.items()))
 
 			# Handle Record
 			if not Query_Module:
@@ -79,7 +78,7 @@ def Device_Parser():
 			else:
 
 				# LOG
-				LOG.Service_Logger.warning("Module allready recorded, bypassing...")
+				LOG.Service_Logger.warning(f"Module allready recorded [{Variables.Module_ID}], bypassing...")
 
 
 
