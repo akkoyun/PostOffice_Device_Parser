@@ -46,8 +46,6 @@ def Device_Parser():
 				# Database Query
 				IoT_Module_Query = DB_Device.query(Models.Module).filter(Models.Module.Device_ID.like(Device_ID)).first()
 
-				print(json.dump(IoT_Module_Query))
-
 				# Handle Record
 				if not IoT_Module_Query:
 
