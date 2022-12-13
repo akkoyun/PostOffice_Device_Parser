@@ -46,8 +46,8 @@ def Device_Parser():
 				# Database Query
 				Version_Query = db.query(Models.Version).filter(
 					Models.Version.Device_ID.like(Device_ID),
-					Models.Version.Firmware_Version.like(Kafka_Message.Firmware),
-					Models.Version.Hardware_Version.like(Kafka_Message.Hardware)).first()
+					Models.Version.Firmware_Version.like(Kafka_Message.Info.Firmware),
+					Models.Version.Hardware_Version.like(Kafka_Message.Info.Hardware)).first()
 
 				# Handle Record
 				if Version_Query == None:
@@ -65,16 +65,16 @@ def Device_Parser():
 #					db.refresh(New_Version_Post)
 
 					# Log 
+					LOG.Service_Logger.debug("Version allready recorded, bypassing...")
+
 					print("There is no existing record for this device. Adding record : ")
 
 
 				else:
-					print("There is an existing record for this device. Bypassing...")
-
-				print("OK")
+					LOG.Service_Logger.warning("Version allready recorded, bypassing...")
 			
 			else:
-				print("NOK")
+				LOG.Service_Logger.warning("There is no version info, bypassing...")
 
 
 
