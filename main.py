@@ -55,7 +55,7 @@ def Device_Parser():
 
 			# Database Query
 			Query_Module = DB_Module.query(Models.Module).filter(Models.Module.Device_ID.like(Device_ID)).first()
-			Variables.Module_ID = np.array(list(Query_Module.__dict__.items()))
+			Variables.Module_ID = np.array(list(Query_Module.__dict__.items()))[1,1]
 
 			# Handle Record
 			if not Query_Module:
