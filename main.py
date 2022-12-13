@@ -104,7 +104,7 @@ def Device_Parser():
 					DB_Version.refresh(New_Version)
 
 					# Log 
-					LOG.Service_Logger.debug(f"Detected new version, recording... [{New_Version.Version_ID}], bypassing...")
+					LOG.Service_Logger.debug(f"New version detected, recording... [{New_Version.Version_ID}]")
 
 				else:
 
@@ -121,6 +121,32 @@ def Device_Parser():
 
 			# ------------------------------------------
 
+			# Parse IMU Data
+			if Kafka_Message.Info.Temperature is not None and Kafka_Message.Info.Humidity is not None:
+
+				# Define DB
+				DB_IMU = Database.SessionLocal()
+
+				# Create Add Record Command
+				New_IMU = Models.IMU(
+					Device_ID = Device_ID,
+					Temperature = Kafka_Message.Info.Temperature,
+					Humidity = Kafka_Message.Info.Humidity)
+
+				# Add and Refresh DataBase
+				DB_IMU.add(New_IMU)
+				DB_IMU.commit()
+				DB_IMU.refresh(New_IMU)
+
+				# Log 
+				LOG.Service_Logger.debug(f"New IMU data detected, recording... [{New_IMU.IMU_ID}]")
+
+			else:
+
+				# LOG
+				LOG.Service_Logger.warning("There is no IMU data, bypassing...")
+
+			# ------------------------------------------
 
 
 
