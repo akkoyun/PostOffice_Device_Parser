@@ -32,6 +32,7 @@ def Device_Parser():
 
 			# Print LOG
 			LOG.Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Message.topic, Message.partition, Message.offset)
+			LOG.Line()
 
 			# Print LOG
 #			print(Kafka_Message)
@@ -82,6 +83,8 @@ def Device_Parser():
 
 			# End LOG
 			LOG.Line()
+			print("")
+			print("")
 
 
 	finally:
