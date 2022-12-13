@@ -240,7 +240,7 @@ def Device_Parser():
 					RSSI = Kafka_Message.IoT.GSM.Operator.RSSI,
 					Device_IP = Kafka_Message.IoT.GSM.Operator.IP,
 					Connection_Time = Kafka_Message.IoT.GSM.Operator.ConnTime,
-					Data_Size = len(Kafka_Message))
+					Data_Size = len(Message.value))
 
 				# Add and Refresh DataBase
 				db.add(New_IoT_Connection_Post)
