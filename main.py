@@ -39,17 +39,6 @@ def Device_Parser():
 			class Variables:
 				Module_ID = 0		# Module ID 
 
-
-
-
-
-
-
-
-
-
-
-
 			# Define DB
 			DB_Module = Database.SessionLocal()
 
@@ -67,15 +56,11 @@ def Device_Parser():
 				DB_Module.commit()
 				DB_Module.refresh(New_Module)
 
-				# Close Database
-				DB_Module.close()
-
 				# Set Variable
 				Variables.Module_ID = New_Module.Module_ID
 
 				# Log
-				RecordedMessage = "New module detected, recording... [" + str(New_Module.Module_ID) + "]"
-				LOG.Service_Logger.debug(RecordedMessage)
+				LOG.Service_Logger.debug(f"New module detected, recording... [{New_Module.Module_ID}]")
 
 			else:
 
@@ -85,8 +70,8 @@ def Device_Parser():
 				# LOG
 				LOG.Service_Logger.warning(f"Module allready recorded [{Variables.Module_ID}], bypassing...")
 
-			LOG.Service_Logger.warning(Variables.Module_ID)
-
+			# Close Database
+			DB_Module.close()
 
 
 
