@@ -21,8 +21,7 @@ def Device_Parser():
 		for Message in Kafka_Consumer:
 
 			# handle Message.
-#			Kafka_Message = Schema.IoT_Data_Pack_Device(**json.loads(Message.value.decode()))
-			Kafka_Message = json.loads(Message.value.decode())
+			Kafka_Message = Schema.IoT_Data_Pack_Device(**json.loads(Message.value.decode()))
 
 			# Handle Headers
 			Command = Message.headers[0][1].decode('ASCII')
@@ -34,6 +33,9 @@ def Device_Parser():
 			LOG.Line()
 			LOG.Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Message.topic, Message.partition, Message.offset)
 			LOG.Line()
+
+			# Print LOG
+			LOG.Service_Logger.info(Kafka_Message)
 
 			# Handle Version
 			if Kafka_Message.Info.Firmware != None and Kafka_Message.Info.Hardware != None:
