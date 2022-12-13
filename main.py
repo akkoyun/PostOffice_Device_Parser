@@ -58,8 +58,8 @@ def Device_Parser():
 			DB_Module.commit()
 			DB_Module.refresh(Query_Module)
 
-
-			print(type(Query_Module.__dict__))
+			aa = Query_Module.__dict__
+			print(aa.values[1])
 
 			# Handle Record
 			if not Query_Module:
