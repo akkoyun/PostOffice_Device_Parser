@@ -1,6 +1,6 @@
 # Import Libraries
 import logging, coloredlogs
-from humanfriendly import format_pretty_table
+from humanfriendly import format_table
 
 # Set Log Options
 logging.basicConfig(filename='Log/Service.LOG', level=logging.INFO)
@@ -27,7 +27,7 @@ def Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Kafka_Topic, Kafka_
 	Values = [Command, Device_ID, Device_IP, Device_Time]
 
 	# Print LOG
-	print(format_pretty_table(Headers, Values))
+	print(format_table(Headers, Values))
 
 #	Service_Logger.debug(f"Command     : '{Command}'")
 #	Service_Logger.debug(f"Device ID   : '{Device_ID}'")
