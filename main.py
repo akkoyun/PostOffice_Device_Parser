@@ -53,7 +53,6 @@ def Device_Parser():
 						Module_Name = "B100xx")
 
 					# Add and Refresh DataBase
-					db = Database.SessionLocal()
 					db.add(New_IoT_Module_Post)
 					db.commit()
 					db.refresh(New_IoT_Module_Post)
@@ -89,7 +88,6 @@ def Device_Parser():
 						Firmware_Version = Kafka_Message.Info.Firmware)
 
 					# Add and Refresh DataBase
-					db = Database.SessionLocal()
 					db.add(New_Version_Post)
 					db.commit()
 					db.refresh(New_Version_Post)
@@ -106,6 +104,9 @@ def Device_Parser():
 			# Parse IMU Data
 			if Kafka_Message.Info.Temperature is not None and Kafka_Message.Info.Humidity is not None:
 
+				# Define DB
+				db = Database.SessionLocal()
+
 				# Create Add Record Command
 				New_IMU_Post = Models.IMU(
 					Device_ID = Device_ID,
@@ -113,7 +114,6 @@ def Device_Parser():
 					Humidity = Kafka_Message.Info.Humidity)
 
 				# Add and Refresh DataBase
-				db = Database.SessionLocal()
 				db.add(New_IMU_Post)
 				db.commit()
 				db.refresh(New_IMU_Post)
@@ -123,6 +123,47 @@ def Device_Parser():
 				LOG.Service_Logger.debug(RecordedMessage)
 			else:
 				LOG.Service_Logger.warning("There is no IMU data, bypassing...")
+
+			# Parse IoT Module
+			if Kafka_Message.IoT.GSM.Module is not None:
+
+				# Define DB
+				db = Database.SessionLocal()
+
+				# Database Query
+				IoT_Module_Query = db.query(Models.IoT_Module).filter(
+					Models.IoT_Module.Device_ID.like(Device_ID),
+					Models.IoT_Module.Module_Firmware.like(Kafka_Message.Firmware),
+					Models.IoT_Module.Module_IMEI.like(Kafka_Message.IMEI),
+					Models.IoT_Module.Module_Serial.like(Kafka_Message.Serial),
+					Models.IoT_Module.Manufacturer_ID == Kafka_Message.Manufacturer,
+					Models.IoT_Module.Model_ID == Kafka_Message.Model).first()
+
+				# Handle Record
+				if IoT_Module_Query == None:
+
+					# Create Add Record Command
+					New_IoT_Module_Post = Models.IoT_Module(
+						Module_Type = 1,
+						Module_Firmware = Kafka_Message.IoT.GSM.Module.Firmware,
+						Module_IMEI = Kafka_Message.IoT.GSM.Module.IMEI,
+						Module_Serial = Kafka_Message.IoT.GSM.Module.Serial,
+						Manufacturer_ID = Kafka_Message.IoT.GSM.Module.Manufacturer,
+						Model_ID = Kafka_Message.IoT.GSM.Module.Model)
+
+					# Add and Refresh DataBase
+					db.add(New_IoT_Module_Post)
+					db.commit()
+					db.refresh(New_IoT_Module_Post)
+
+				# Log
+				RecordedMessage = "Detected new IoT module, recording... [" + str(New_IoT_Module_Post.Module_ID) + "]"
+				LOG.Service_Logger.debug(RecordedMessage)
+			else:
+				LOG.Service_Logger.warning("There is no IoT module data, bypassing...")
+
+
+
 
 
 
