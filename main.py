@@ -47,18 +47,18 @@ def Device_Parser():
 				if IoT_Module_Query == None:
 
 					# Create Add Record Command
-					New_IoT_Module_Post = Models.Module(
+					New_Module_Post = Models.Module(
 						Device_ID = Device_ID,
 						Device_Development = True,
 						Module_Name = "B100xx")
 
 					# Add and Refresh DataBase
-					db.add(New_IoT_Module_Post)
+					db.add(New_Module_Post)
 					db.commit()
-					db.refresh(New_IoT_Module_Post)
+					db.refresh(New_Module_Post)
 
 					# Log
-					RecordedMessage = "New module detected, recording... [" + str(New_IoT_Module_Post.Module_ID) + "]"
+					RecordedMessage = "New module detected, recording... [" + str(New_Module_Post.Module_ID) + "]"
 					LOG.Service_Logger.debug(RecordedMessage)
 
 				else:
