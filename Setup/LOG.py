@@ -23,8 +23,12 @@ def Database_DisConnect():
 def Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Kafka_Topic, Kafka_Partition, Kafka_Offset):
 
 	# Define Headers
-	Headers = ["Command", "Device ID", "Client IP", "Device Time"]
-	Values = [Command, Device_ID, Device_IP, Device_Time]
+	Headers = ["Header", "Value"]
+	Values = [
+		["Command", Command], 
+		["Device ID", Device_ID],
+		["Device IP", Device_IP],
+		["Device Time", Device_Time]]
 
 	# Print LOG
 	print(format_table(Headers, Values))
