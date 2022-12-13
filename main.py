@@ -68,9 +68,6 @@ def Device_Parser():
 			else:
 
 				# Set Variable
-#				Variables.Module_ID = np.array(list(Query_Module.__dict__.items()))[5,1]
-				print(np.array(list(Query_Module.__dict__.items())))
-
 				for X in np.array(list(Query_Module.__dict__.items())):
 					if X[0] == "Module_ID":
 						Variables.Module_ID = X[1]
@@ -198,7 +195,10 @@ def Device_Parser():
 				else:
 
 					# Set Variable
-					Variables.IoT_Module_ID = np.array(list(Query_IoT_Module.__dict__.items()))[6,1]
+					for X in np.array(list(Query_Module.__dict__.items())):
+						if X[0] == "Module_ID":
+							Variables.IoT_Module_ID = X[1]
+							break
 
 					# LOG
 					LOG.Service_Logger.warning(f"IoT module allready recorded [{Variables.IoT_Module_ID}], bypassing...")
