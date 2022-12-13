@@ -2,7 +2,7 @@
 from Setup import LOG, Database, Schema, Models
 from Setup.Config import APP_Settings
 from kafka import KafkaConsumer
-from sqlalchemy import inspect
+import numpy as np
 import json
 
 # Create DB Models
@@ -58,7 +58,7 @@ def Device_Parser():
 			DB_Module.commit()
 			DB_Module.refresh(Query_Module)
 
-			aa = list(Query_Module.__dict__.items())
+			aa = np.array(list(Query_Module.__dict__.items()))
 			print(aa)
 
 			# Handle Record
