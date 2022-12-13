@@ -194,7 +194,7 @@ def Device_Parser():
 				IoT_SIM_Query = db.query(Models.SIM).filter(
 					Models.SIM.ICCID.like(Kafka_Message.IoT.GSM.Operator.ICCID),
 					Models.SIM.Operator_ID == Kafka_Message.IoT.GSM.Operator.Code).first
-
+				print(IoT_SIM_Query)
 				# Handle Record
 				if IoT_SIM_Query == None:
 
