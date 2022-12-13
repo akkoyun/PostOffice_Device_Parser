@@ -34,9 +34,6 @@ def Device_Parser():
 			LOG.Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Message.topic, Message.partition, Message.offset)
 			LOG.Line()
 
-			# Print LOG
-			LOG.Service_Logger.info(Kafka_Message)
-
 			# Handle Version
 			if Kafka_Message.Info.Firmware != None and Kafka_Message.Info.Hardware != None:
 
@@ -53,27 +50,28 @@ def Device_Parser():
 				if Version_Query == None:
 
 					# Create Add Record Command
-#					New_Version_Post = Models.Version(
-#						Device_ID = Device_ID, 
-#						Hardware_Version = Kafka_Message.Hardware,
-#						Firmware_Version = Kafka_Message.Firmware)
+					New_Version_Post = Models.Version(
+						Device_ID = Device_ID, 
+						Hardware_Version = Kafka_Message.Info.Hardware,
+						Firmware_Version = Kafka_Message.Info.Firmware)
 
 					# Add and Refresh DataBase
-#					db = Database.SessionLocal()
-#					db.add(New_Version_Post)
-#					db.commit()
-#					db.refresh(New_Version_Post)
+					db = Database.SessionLocal()
+					db.add(New_Version_Post)
+					db.commit()
+					db.refresh(New_Version_Post)
 
 					# Log 
-					LOG.Service_Logger.debug("Version allready recorded, bypassing...")
-
-					print("There is no existing record for this device. Adding record : ")
-
+					LOG.Service_Logger.debug("Detected new version, recording... [", New_Version_Post.Version_ID, "]")
 
 				else:
+
+					# Log 
 					LOG.Service_Logger.warning("Version allready recorded, bypassing...")
 			
 			else:
+
+				# Log 
 				LOG.Service_Logger.warning("There is no version info, bypassing...")
 
 
