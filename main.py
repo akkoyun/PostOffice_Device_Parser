@@ -60,8 +60,7 @@ def Device_Parser():
 			# Database Query
 			Query_Module = DB_Module.query(Models.Module).filter(Models.Module.Device_ID.like(Device_ID)).first()
 
-			for e in Query_Module:
-				print(e)
+			print(type(Query_Module))
 
 			# Handle Record
 			if not Query_Module:
