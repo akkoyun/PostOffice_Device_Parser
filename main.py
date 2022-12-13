@@ -10,6 +10,9 @@ Database.Base.metadata.create_all(bind=Database.DB_Engine)
 # Kafka Consumer
 Kafka_Consumer = KafkaConsumer('Device', bootstrap_servers=f"{APP_Settings.POSTOFFICE_KAFKA_HOSTNAME}:{APP_Settings.POSTOFFICE_KAFKA_PORT}", group_id="Data_Consumer", auto_offset_reset='earliest', enable_auto_commit=False)
 
+# Boot Log Message
+log_functions.LOG_Service_Start()
+
 # Parser Function
 def Device_Parser():
 

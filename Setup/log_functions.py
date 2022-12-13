@@ -37,7 +37,7 @@ ch.setFormatter(CustomFormatter())
 Service_Logger.addHandler(ch)
 
 # Boot Log
-def LOG_Database_Connect():
+def LOG_Service_Start():
 	Service_Logger.info("API Log --> Service Started.")
 
 # Database Log
