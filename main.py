@@ -233,23 +233,28 @@ def Device_Parser():
 				# Refresh DataBase
 				db.refresh(IoT_Existing_SIM_Query)
 
-				# Create Add Record Command
-				New_IoT_Connection_Post = Models.Connection(
-					Device_ID = Device_ID,
-					SIM_ID = IoT_Existing_SIM_Query.SIM_ID,
-					RSSI = Kafka_Message.IoT.GSM.Operator.RSSI,
-					Device_IP = Kafka_Message.IoT.GSM.Operator.IP,
-					Connection_Time = Kafka_Message.IoT.GSM.Operator.ConnTime,
-					Data_Size = len(Message.value))
+				# Handle SIM
+				if IoT_Existing_SIM_Query is not None:
 
-				# Add and Refresh DataBase
-				db.add(New_IoT_Connection_Post)
-				db.commit()
-				db.refresh(New_IoT_Connection_Post)
+					# Create Add Record Command
+					New_IoT_Connection_Post = Models.Connection(
+						Device_ID = Device_ID,
+						SIM_ID = IoT_Existing_SIM_Query.SIM_ID,
+						RSSI = Kafka_Message.IoT.GSM.Operator.RSSI,
+						Device_IP = Kafka_Message.IoT.GSM.Operator.IP,
+						Connection_Time = Kafka_Message.IoT.GSM.Operator.ConnTime,
+						Data_Size = len(Message.value))
 
-				# Lof
-				RecordedMessage = "Detected new connection data, recording... [" + str(New_IoT_Connection_Post.Connection_ID) + "]"
-				LOG.Service_Logger.debug(RecordedMessage)
+					# Add and Refresh DataBase
+					db.add(New_IoT_Connection_Post)
+					db.commit()
+					db.refresh(New_IoT_Connection_Post)
+
+					# Lof
+					RecordedMessage = "Detected new connection data, recording... [" + str(New_IoT_Connection_Post.Connection_ID) + "]"
+					LOG.Service_Logger.debug(RecordedMessage)
+				else:
+					LOG.Service_Logger.error("SIM Data Error...")
 			else:
 				LOG.Service_Logger.warning("There is no connection data, bypassing...")
 
