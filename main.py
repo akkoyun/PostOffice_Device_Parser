@@ -30,6 +30,7 @@ def Device_Parser():
 			log_functions.Log_Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Message.topic, Message.partition, Message.offset)
 
 			# Print LOG
+			print(Kafka_Message)
 #			print("Hardware Version : ", Kafka_Message.Hardware)
 #			print("Firmware Version : ", Kafka_Message.Firmware)
 #			print("................................................................................")
