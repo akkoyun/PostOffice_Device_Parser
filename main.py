@@ -74,7 +74,7 @@ def Device_Parser():
 			else:
 
 				# Set Variable
-				Module_Array = list(Query_Module.__dict__.items()).index('Module_ID')
+				Module_Array = list(Query_Module.__dict__.items())
 				print(Module_Array)
 
 				# LOG
