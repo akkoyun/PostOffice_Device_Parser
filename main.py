@@ -208,8 +208,37 @@ def Device_Parser():
 			# Close Database
 			DB_IoT_Module.close()
 
+			# ------------------------------------------
 
+			# Parse IoT Location
+			if Kafka_Message.IoT.GSM.Operator.LAC is not None and Kafka_Message.IoT.GSM.Operator.Cell_ID is not None:
 
+				# Define DB
+				DB_Location = Database.SessionLocal()
+
+				# Create Add Record Command
+				New_IoT_Location_Post = Models.Location(
+					Device_ID = Device_ID,
+					LAC = Kafka_Message.IoT.GSM.Operator.LAC,
+					Cell_ID = Kafka_Message.IoT.GSM.Operator.Cell_ID)
+
+				# Add and Refresh DataBase
+				DB_Location.add(New_IoT_Location_Post)
+				DB_Location.commit()
+				DB_Location.refresh(New_IoT_Location_Post)
+
+				# LOG
+				LOG.Service_Logger.warning(f"New location detected [{New_IoT_Location_Post.Location_ID}], recording...")
+
+			else:
+
+				# LOG
+				LOG.Service_Logger.warning("There is no location data, bypassing...")
+
+			# Close Database
+			DB_Location.close()
+
+			# ------------------------------------------
 
 
 
