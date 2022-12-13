@@ -6,7 +6,7 @@ logging.basicConfig(filename='Log/Service.LOG', level=logging.INFO)
 Service_Logger = logging.getLogger(__name__)
 
 # Set Log Colored
-coloredlogs.install()
+coloredlogs.install(level='DEBUG', logger=Service_Logger)
 
 # Boot Log
 def Service_Start():
@@ -20,6 +20,12 @@ def Database_DisConnect():
 
 # LOG Kafka Header
 def Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Kafka_Topic, Kafka_Partition, Kafka_Offset):
+
+	Service_Logger.debug("this is a debugging message")
+	Service_Logger.info("this is an informational message")
+	Service_Logger.warning("this is a warning message")
+	Service_Logger.error("this is an error message")
+	Service_Logger.critical("this is a critical message")
 
 	# Print LOG
 	Service_Logger.debug("Command     : ", Command)
