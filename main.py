@@ -18,7 +18,8 @@ def Device_Parser():
 		for Message in Kafka_Consumer:
 
 			# handle Message.
-			Kafka_Message = Schema.IoT_Data_Pack_Device(**json.loads(Message.value.decode()))
+#			Kafka_Message = Schema.IoT_Data_Pack_Device(**json.loads(Message.value.decode()))
+			Kafka_Message = json.loads(Message.value.decode())
 
 			# Handle Headers
 			Command = Message.headers[0][1].decode('ASCII')
