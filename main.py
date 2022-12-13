@@ -2,6 +2,7 @@
 from Setup import LOG, Database, Schema, Models
 from Setup.Config import APP_Settings
 from kafka import KafkaConsumer
+from sqlalchemy import inspect
 import json
 
 # Create DB Models
@@ -12,6 +13,10 @@ Kafka_Consumer = KafkaConsumer('Device', bootstrap_servers=f"{APP_Settings.POSTO
 
 # Boot Log Message
 LOG.Service_Start()
+
+def object_as_dict(obj):
+    return {c.key: getattr(obj, c.key)
+            for c in inspect(obj).mapper.column_attrs}
 
 # Parser Function
 def Device_Parser():
@@ -55,7 +60,7 @@ def Device_Parser():
 			# Database Query
 			Query_Module = DB_Module.query(Models.Module).filter(Models.Module.Device_ID.like(Device_ID)).first()
 
-			print(dict(Query_Module))
+			print(object_as_dict(Query_Module))
 
 			# Handle Record
 			if not Query_Module:
