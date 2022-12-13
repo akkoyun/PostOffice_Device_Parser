@@ -21,17 +21,11 @@ def Database_DisConnect():
 # LOG Kafka Header
 def Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Kafka_Topic, Kafka_Partition, Kafka_Offset):
 
-	Service_Logger.debug("this is a debugging message")
-	Service_Logger.info("this is an informational message")
-	Service_Logger.warning("this is a warning message")
-	Service_Logger.error("this is an error message")
-	Service_Logger.critical("this is a critical message")
-
 	# Print LOG
-	Service_Logger.debug("Command     : ", Command)
-	Service_Logger.debug("Device ID   : ", Device_ID)
-	Service_Logger.debug("Client IP   : ", Device_IP)
-	Service_Logger.debug("Device Time : ", Device_Time)
+	Service_Logger.debug(f"Command     : '{Command}'")
+	Service_Logger.debug(f"Device ID   : '{Device_ID}'")
+	Service_Logger.debug(f"Client IP   : '{Device_IP}'")
+	Service_Logger.debug(f"Device Time : '{Device_Time}'")
 
 
 #	print("................................................................................")
