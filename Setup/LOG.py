@@ -31,7 +31,7 @@ def Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Kafka_Topic, Kafka_
 		["Device Time", Device_Time]]
 
 	# Print LOG
-	print(format_table(Headers, Values))
+	print(format_table(Values))
 
 #	Service_Logger.debug(f"Command     : '{Command}'")
 #	Service_Logger.debug(f"Device ID   : '{Device_ID}'")
