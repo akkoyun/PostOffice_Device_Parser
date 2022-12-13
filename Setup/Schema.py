@@ -258,3 +258,7 @@ class IoT_Data_Pack_Model(BaseModel):
 
 	# Payload
 	Payload: IoT_Data_Pack_Payload
+
+class Module(BaseModel):
+	Module_ID: int
+	Device_ID: str
