@@ -286,12 +286,50 @@ def Device_Parser():
 					# LOG
 					LOG.Service_Logger.warning(f"SIM allready recorded [{Variables.SIM_ID}], bypassing...")
 
+				# Close Database
+				DB_SIM.close()
+
 			else:
 
 				# LOG
 				LOG.Service_Logger.warning("There is no SIM data, bypassing...")
 
 			# ------------------------------------------
+
+			# Parse IoT Connection
+			if Kafka_Message.IoT.GSM.Operator.RSSI is not None:
+
+				# Define DB
+				DB_Connection = Database.SessionLocal()
+
+				# Create Add Record Command
+				New_IoT_Connection_Post = Models.Connection(
+					Device_ID = Device_ID,
+					SIM_ID = Variables.SIM_ID,
+					RSSI = Kafka_Message.IoT.GSM.Operator.RSSI,
+					Device_IP = Device_IP,
+					Connection_Time = Kafka_Message.IoT.GSM.Operator.ConnTime,
+					Data_Size = len(Message.value))
+
+				# Add and Refresh DataBase
+				DB_Connection.add(New_IoT_Connection_Post)
+				DB_Connection.commit()
+				DB_Connection.refresh(New_IoT_Connection_Post)
+
+				# Log 
+				LOG.Service_Logger.debug(f"New connection data detected, recording... [{New_IoT_Connection_Post.Connection_ID}]")
+
+				# Close Database
+				DB_Connection.close()
+
+			else:
+
+				# Log 
+				LOG.Service_Logger.warning("There is no connection data, bypassing...")
+
+			# ------------------------------------------
+
+
 
 
 
