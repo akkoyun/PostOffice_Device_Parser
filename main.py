@@ -31,7 +31,7 @@ def Device_Parser():
 			Device_IP = Message.headers[3][1].decode('ASCII')
 
 			# Print LOG
-			LOG.Log_Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Message.topic, Message.partition, Message.offset)
+			LOG.Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Message.topic, Message.partition, Message.offset)
 
 			# Print LOG
 #			print(Kafka_Message)

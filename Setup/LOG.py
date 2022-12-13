@@ -18,23 +18,20 @@ def Database_Connect():
 def Database_DisConnect():
 	Service_Logger.debug("API Log --> Connection Closed")
 
-
-
-
-
-
-
-
-
-
 # LOG Kafka Header
-def Log_Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Kafka_Topic, Kafka_Partition, Kafka_Offset):
+def Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Kafka_Topic, Kafka_Partition, Kafka_Offset):
 
 	# Print LOG
-	print("................................................................................")
-	print("Command     : ", Command)
-	print("Device ID   : ", Device_ID)
-	print("Client IP   : ", Device_IP)
-	print("Device Time : ", Device_Time)
-	print("Topic : ", Kafka_Topic, " - Partition : ", Kafka_Partition, " - Offset : ", Kafka_Offset)
-	print("................................................................................")
+	Service_Logger.info("................................................................................")
+	Service_Logger.info("Command     : "), Service_Logger.debug(Command)
+
+	Service_Logger.info("................................................................................")
+
+
+#	print("................................................................................")
+#	print("Command     : ", Command)
+#	print("Device ID   : ", Device_ID)
+#	print("Client IP   : ", Device_IP)
+#	print("Device Time : ", Device_Time)
+#	print("Topic : ", Kafka_Topic, " - Partition : ", Kafka_Partition, " - Offset : ", Kafka_Offset)
+#	print("................................................................................")
