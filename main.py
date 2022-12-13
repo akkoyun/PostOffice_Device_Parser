@@ -75,7 +75,7 @@ def Device_Parser():
 
 				# Set Variable
 				Module_Array = np.array(list(Query_Module.__dict__.items()))
-				print(index(Module_Array, 'Module_ID'))
+				print(Module_Array)
 
 				# LOG
 				LOG.Service_Logger.warning(f"Module allready recorded [{Variables.Module_ID}], bypassing...")
