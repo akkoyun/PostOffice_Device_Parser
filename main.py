@@ -120,9 +120,6 @@ def Device_Parser():
 				# LOG
 				LOG.Service_Logger.warning("There is no version info, bypassing...")
 
-			# Close Database
-			DB_Version.close()
-
 			# ------------------------------------------
 
 			# Parse IMU Data
@@ -145,13 +142,13 @@ def Device_Parser():
 				# Log 
 				LOG.Service_Logger.debug(f"New IMU data detected [{round(Kafka_Message.Info.Temperature, 2)} C / {round(Kafka_Message.Info.Humidity, 2)} %], recording... [{New_IMU.IMU_ID}]")
 
+				# Close Database
+				DB_IMU.close()
+
 			else:
 
 				# LOG
 				LOG.Service_Logger.warning("There is no IMU data, bypassing...")
-
-			# Close Database
-			DB_IMU.close()
 
 			# ------------------------------------------
 
@@ -200,13 +197,13 @@ def Device_Parser():
 					# LOG
 					LOG.Service_Logger.warning(f"IoT module allready recorded [{Variables.IoT_Module_ID}], bypassing...")
 
+				# Close Database
+				DB_IoT_Module.close()
+
 			else:
 
 				# LOG
 				LOG.Service_Logger.warning("There is no IoT module data, bypassing...")
-
-			# Close Database
-			DB_IoT_Module.close()
 
 			# ------------------------------------------
 
@@ -230,13 +227,13 @@ def Device_Parser():
 				# LOG
 				LOG.Service_Logger.debug(f"New location detected [{Kafka_Message.IoT.GSM.Operator.LAC} - {Kafka_Message.IoT.GSM.Operator.Cell_ID}], recording... [{New_IoT_Location_Post.Location_ID}]")
 
+				# Close Database
+				DB_Location.close()
+
 			else:
 
 				# LOG
 				LOG.Service_Logger.warning("There is no location data, bypassing...")
-
-			# Close Database
-			DB_Location.close()
 
 			# ------------------------------------------
 
