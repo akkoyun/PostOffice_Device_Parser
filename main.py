@@ -155,13 +155,19 @@ def Device_Parser():
 					db.commit()
 					db.refresh(New_IoT_Module)
 
+					# Get IoT Module ID
+					IoT_Module_ID = New_IoT_Module.Module_ID
+
 					# Log
 					RecordedMessage = "Detected new IoT module, recording... [" + str(New_IoT_Module.Module_ID) + "]"
 					LOG.Service_Logger.debug(RecordedMessage)
 				else:
+					IoT_Module_ID = IoT_Module_Query.Module_ID
 					LOG.Service_Logger.warning("IoT module allready recorded, bypassing...")
 			else:
 				LOG.Service_Logger.warning("There is no IoT module data, bypassing...")
+
+			print(IoT_Module_ID)
 
 			# Parse IoT Location
 			if Kafka_Message.IoT.GSM.Operator.LAC is not None and Kafka_Message.IoT.GSM.Operator.Cell_ID is not None:
@@ -256,6 +262,9 @@ def Device_Parser():
 					LOG.Service_Logger.error("SIM Data Error...")
 			else:
 				LOG.Service_Logger.warning("There is no connection data, bypassing...")
+
+
+
 
 
 
