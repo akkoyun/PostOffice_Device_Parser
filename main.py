@@ -34,6 +34,39 @@ def Device_Parser():
 			LOG.Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Message.topic, Message.partition, Message.offset)
 			LOG.Line()
 
+			# Handle Device
+			if Kafka_Message.Info != None:
+
+				# Define DB
+				db = Database.SessionLocal()
+
+				# Database Query
+				IoT_Module_Query = db.query(Models.Module).filter(Models.Module.Device_ID.like(Device_ID)).first()
+
+				# Handle Record
+				if IoT_Module_Query == None:
+
+					# Create Add Record Command
+					New_IoT_Module_Post = Models.Module(
+						Device_ID = Device_ID,
+						Device_Development = True,
+						Module_Name = "B100xx")
+
+					# Add and Refresh DataBase
+					db = Database.SessionLocal()
+					db.add(New_IoT_Module_Post)
+					db.commit()
+					db.refresh(New_IoT_Module_Post)
+
+					# Log
+					RecordedMessage = "New module detected, recording... [" + str(New_IoT_Module_Post.Module_ID) + "]"
+					LOG.Service_Logger.debug(RecordedMessage)
+
+				else:
+					LOG.Service_Logger.warning("Module allready recorded, bypassing...")
+			else:
+				LOG.Service_Logger.warning("There is no info, bypassing...")
+
 			# Handle Version
 			if Kafka_Message.Info.Firmware != None and Kafka_Message.Info.Hardware != None:
 
@@ -90,8 +123,13 @@ def Device_Parser():
 
 
 
+
+
+
+
+
 			# Close Database
-#			db.close()
+			db.close()
 
 			# Commit Message
 			Kafka_Consumer.commit()
