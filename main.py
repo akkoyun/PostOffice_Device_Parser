@@ -77,7 +77,49 @@ def Device_Parser():
 
 			# ------------------------------------------
 
+			# Parse Version
+			if Kafka_Message.Info.Firmware != None and Kafka_Message.Info.Hardware != None:
 
+				# Define DB
+				DB_Version = Database.SessionLocal()
+
+				# Database Query
+				Query_Version = DB_Version.query(Models.Version).filter(
+					Models.Version.Device_ID.like(Device_ID),
+					Models.Version.Firmware_Version.like(Kafka_Message.Info.Firmware),
+					Models.Version.Hardware_Version.like(Kafka_Message.Info.Hardware)).first()
+
+				# Handle Record
+				if not Query_Version:
+
+					# Create Add Record Command
+					New_Version = Models.Version(
+						Device_ID = Device_ID, 
+						Hardware_Version = Kafka_Message.Info.Hardware,
+						Firmware_Version = Kafka_Message.Info.Firmware)
+
+					# Add and Refresh DataBase
+					DB_Version.add(New_Version)
+					DB_Version.commit()
+					DB_Version.refresh(New_Version)
+
+					# Log 
+					LOG.Service_Logger.debug(f"Detected new version, recording... [{New_Version.Version_ID}], bypassing...")
+
+				else:
+
+					# LOG
+					LOG.Service_Logger.warning("Version allready recorded, bypassing...")
+
+				# Close Database
+				DB_Version.close()
+
+			else:
+
+				# LOG
+				LOG.Service_Logger.warning("There is no version info, bypassing...")
+
+			# ------------------------------------------
 
 
 
