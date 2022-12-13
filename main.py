@@ -47,18 +47,18 @@ def Device_Parser():
 				if IoT_Module_Query == None:
 
 					# Create Add Record Command
-					New_Module_Post = Models.Module(
+					New_Module = Models.Module(
 						Device_ID = Device_ID,
 						Device_Development = True,
 						Module_Name = "B100xx")
 
 					# Add and Refresh DataBase
-					db.add(New_Module_Post)
+					db.add(New_Module)
 					db.commit()
-					db.refresh(New_Module_Post)
+					db.refresh(New_Module)
 
 					# Log
-					RecordedMessage = "New module detected, recording... [" + str(New_Module_Post.Module_ID) + "]"
+					RecordedMessage = "New module detected, recording... [" + str(New_Module.Module_ID) + "]"
 					LOG.Service_Logger.debug(RecordedMessage)
 
 				else:
@@ -82,18 +82,18 @@ def Device_Parser():
 				if Version_Query == None:
 
 					# Create Add Record Command
-					New_Version_Post = Models.Version(
+					New_Version = Models.Version(
 						Device_ID = Device_ID, 
 						Hardware_Version = Kafka_Message.Info.Hardware,
 						Firmware_Version = Kafka_Message.Info.Firmware)
 
 					# Add and Refresh DataBase
-					db.add(New_Version_Post)
+					db.add(New_Version)
 					db.commit()
-					db.refresh(New_Version_Post)
+					db.refresh(New_Version)
 
 					# Log 
-					RecordedMessage = "Detected new version, recording... [" + str(New_Version_Post.Version_ID) + "]"
+					RecordedMessage = "Detected new version, recording... [" + str(New_Version.Version_ID) + "]"
 					LOG.Service_Logger.debug(RecordedMessage)
 
 				else:
@@ -108,18 +108,18 @@ def Device_Parser():
 				db = Database.SessionLocal()
 
 				# Create Add Record Command
-				New_IMU_Post = Models.IMU(
+				New_IMU = Models.IMU(
 					Device_ID = Device_ID,
 					Temperature = Kafka_Message.Info.Temperature,
 					Humidity = Kafka_Message.Info.Humidity)
 
 				# Add and Refresh DataBase
-				db.add(New_IMU_Post)
+				db.add(New_IMU)
 				db.commit()
-				db.refresh(New_IMU_Post)
+				db.refresh(New_IMU)
 
 				# Log
-				RecordedMessage = "Detected new IMU data, recording... [" + str(New_IMU_Post.IMU_ID) + "]"
+				RecordedMessage = "Detected new IMU data, recording... [" + str(New_IMU.IMU_ID) + "]"
 				LOG.Service_Logger.debug(RecordedMessage)
 			else:
 				LOG.Service_Logger.warning("There is no IMU data, bypassing...")
@@ -142,7 +142,7 @@ def Device_Parser():
 				if IoT_Module_Query == None:
 
 					# Create Add Record Command
-					New_IoT_Module_Post = Models.IoT_Module(
+					New_IoT_Module = Models.IoT_Module(
 						Module_Type = 1,
 						Module_Firmware = Kafka_Message.IoT.GSM.Module.Firmware,
 						Module_IMEI = Kafka_Message.IoT.GSM.Module.IMEI,
@@ -151,12 +151,12 @@ def Device_Parser():
 						Model_ID = Kafka_Message.IoT.GSM.Module.Model)
 
 					# Add and Refresh DataBase
-					db.add(New_IoT_Module_Post)
+					db.add(New_IoT_Module)
 					db.commit()
-					db.refresh(New_IoT_Module_Post)
+					db.refresh(New_IoT_Module)
 
 				# Log
-				RecordedMessage = "Detected new IoT module, recording... [" + str(New_IoT_Module_Post.Module_ID) + "]"
+				RecordedMessage = "Detected new IoT module, recording... [" + str(New_IoT_Module.Module_ID) + "]"
 				LOG.Service_Logger.debug(RecordedMessage)
 			else:
 				LOG.Service_Logger.warning("There is no IoT module data, bypassing...")
