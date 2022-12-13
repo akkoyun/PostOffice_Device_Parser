@@ -46,6 +46,8 @@ def Device_Parser():
 				# Database Query
 				IoT_Module_Query = DB_Device.query(Models.Module).filter(Models.Module.Device_ID.like(Device_ID)).first()
 
+				print(IoT_Module_Query.__dict__)
+
 				# Handle Record
 				if not IoT_Module_Query:
 
@@ -67,7 +69,7 @@ def Device_Parser():
 				else:
 
 					# Set Module ID
-					print(DB_Device.execute(IoT_Module_Query).first())
+					
 
 					# LOG
 					LOG.Service_Logger.warning("Module allready recorded, bypassing...")
