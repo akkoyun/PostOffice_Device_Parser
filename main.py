@@ -67,7 +67,7 @@ def Device_Parser():
 				else:
 
 					# Set Module ID
-					print(DB_Device.execute(IoT_Module_Query).fetchall())
+					print(DB_Device.execute(IoT_Module_Query).first())
 
 					# LOG
 					LOG.Service_Logger.warning("Module allready recorded, bypassing...")
