@@ -139,7 +139,7 @@ def Device_Parser():
 					Models.IoT_Module.Model_ID == Kafka_Message.IoT.GSM.Module.Model).first()
 
 				# Refresh DataBase
-				A = db.refresh()
+				A = db.get()
 				print(A)
 
 				# Handle Record
