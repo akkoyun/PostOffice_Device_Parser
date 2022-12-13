@@ -38,6 +38,7 @@ def Device_Parser():
 			# Declare Variables
 			class Variables:
 				Module_ID = 0		# Module ID 
+				IoT_Module_ID = 0	# GSM Module ID
 
 			# ------------------------------------------
 
@@ -119,6 +120,9 @@ def Device_Parser():
 				# LOG
 				LOG.Service_Logger.warning("There is no version info, bypassing...")
 
+			# Close Database
+			DB_Version.close()
+
 			# ------------------------------------------
 
 			# Parse IMU Data
@@ -146,7 +150,71 @@ def Device_Parser():
 				# LOG
 				LOG.Service_Logger.warning("There is no IMU data, bypassing...")
 
+			# Close Database
+			DB_IMU.close()
+
 			# ------------------------------------------
+
+			# Parse IoT Module
+			if Kafka_Message.IoT.GSM.Module is not None:
+
+				# Define DB
+				DB_IoT_Module = Database.SessionLocal()
+
+				# Database Query
+				Query_IoT_Module = DB_IoT_Module.query(Models.IoT_Module).filter(
+					Models.IoT_Module.Module_Firmware.like(Kafka_Message.IoT.GSM.Module.Firmware),
+					Models.IoT_Module.Module_IMEI.like(Kafka_Message.IoT.GSM.Module.IMEI),
+					Models.IoT_Module.Module_Serial.like(Kafka_Message.IoT.GSM.Module.Serial),
+					Models.IoT_Module.Manufacturer_ID == Kafka_Message.IoT.GSM.Module.Manufacturer,
+					Models.IoT_Module.Model_ID == Kafka_Message.IoT.GSM.Module.Model).first()
+
+				# Handle Record
+				if not Query_IoT_Module:
+
+					# Create Add Record Command
+					New_IoT_Module = Models.IoT_Module(
+						Module_Type = 1,
+						Module_Firmware = Kafka_Message.IoT.GSM.Module.Firmware,
+						Module_IMEI = Kafka_Message.IoT.GSM.Module.IMEI,
+						Module_Serial = Kafka_Message.IoT.GSM.Module.Serial,
+						Manufacturer_ID = Kafka_Message.IoT.GSM.Module.Manufacturer,
+						Model_ID = Kafka_Message.IoT.GSM.Module.Model)
+
+					# Add and Refresh DataBase
+					DB_IoT_Module.add(New_IoT_Module)
+					DB_IoT_Module.commit()
+					DB_IoT_Module.refresh(New_IoT_Module)
+
+					# Set Variable
+					Variables.IoT_Module_ID = New_IoT_Module.Module_ID
+
+					# Log
+					LOG.Service_Logger.debug(f"New IoT module detected, recording... [{New_IoT_Module.Module_ID}]")
+
+				else:
+
+					# Set Variable
+					Variables.IoT_Module_ID = np.array(list(Query_IoT_Module.__dict__.items()))[5,1]
+					print(np.array(list(Query_IoT_Module.__dict__.items())))
+
+					# LOG
+					LOG.Service_Logger.warning(f"IoT module allready recorded [{Variables.IoT_Module_ID}], bypassing...")
+
+			else:
+
+				# LOG
+				LOG.Service_Logger.warning("There is no IoT module data, bypassing...")
+
+			# Close Database
+			DB_IoT_Module.close()
+
+
+
+
+
+
+
 
 
 
