@@ -61,7 +61,7 @@ def Device_Parser():
 			Query_Module = DB_Module.query(Models.Module).filter(Models.Module.Device_ID.like(Device_ID)).first()
 
 			print(type(Query_Module))
-			M = json.dumps(Query_Module.__dict__)
+			M = object_as_dict(Query_Module)
 			print(M)
 			print(type(M))
 
