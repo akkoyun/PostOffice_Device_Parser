@@ -208,9 +208,9 @@ def Device_Parser():
 					db.commit()
 					db.refresh(New_IoT_SIM_Post)
 
-				# Log
-				RecordedMessage = "Detected new SIM, recording... [" + str(New_IoT_SIM_Post.SIM_ID) + "]"
-				LOG.Service_Logger.debug(RecordedMessage)
+					# Log
+					RecordedMessage = "Detected new SIM, recording... [" + str(New_IoT_SIM_Post.SIM_ID) + "]"
+					LOG.Service_Logger.debug(RecordedMessage)
 			else:
 				LOG.Service_Logger.warning("There is no SIM data, bypassing...")
 
