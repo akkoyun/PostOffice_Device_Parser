@@ -2,7 +2,7 @@
 import logging
 
 # Set Log Options
-logging.basicConfig(filename='/Log/Service.LOG', level=logging.INFO)
+logging.basicConfig(filename='Log/Service.LOG', level=logging.INFO)
 Service_Logger = logging.getLogger(__name__)
 
 
