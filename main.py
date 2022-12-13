@@ -137,6 +137,8 @@ def Device_Parser():
 					Models.IoT_Module.Module_Serial.like(Kafka_Message.IoT.GSM.Module.Serial),
 					Models.IoT_Module.Manufacturer_ID == Kafka_Message.IoT.GSM.Module.Manufacturer,
 					Models.IoT_Module.Model_ID == Kafka_Message.IoT.GSM.Module.Model).first()
+
+				print(IoT_Module_Query)
 	
 				# Handle Record
 				if IoT_Module_Query == None:
@@ -184,6 +186,8 @@ def Device_Parser():
 			else:
 				LOG.Service_Logger.warning("There is no location data, bypassing...")
 
+			print(Kafka_Message.IoT.GSM.Operator.ICCID)
+
 			# Parse IoT SIM
 			if Kafka_Message.IoT.GSM.Operator.ICCID is not None:
 
@@ -194,7 +198,9 @@ def Device_Parser():
 				IoT_SIM_Query = db.query(Models.SIM).filter(
 					Models.SIM.ICCID.like(Kafka_Message.IoT.GSM.Operator.ICCID),
 					Models.SIM.Operator_ID == Kafka_Message.IoT.GSM.Operator.Code).first
+
 				print(IoT_SIM_Query)
+
 				# Handle Record
 				if IoT_SIM_Query == None:
 
