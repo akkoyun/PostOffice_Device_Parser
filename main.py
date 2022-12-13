@@ -31,8 +31,50 @@ def Device_Parser():
 			Device_IP = Message.headers[3][1].decode('ASCII')
 
 			# Print LOG
+			LOG.Line()
 			LOG.Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Message.topic, Message.partition, Message.offset)
 			LOG.Line()
+
+			# Handle Version
+			if Kafka_Message.Firmware != None and Kafka_Message.Hardware != None:
+
+				# Database Query
+				Version_Query = db.query(Models.Version).filter(
+					Models.Version.Device_ID.like(Device_ID),
+					Models.Version.Firmware_Version.like(Kafka_Message.Firmware),
+					Models.Version.Hardware_Version.like(Kafka_Message.Hardware)).first()
+
+				# Handle Record
+				if Version_Query == None:
+
+					# Create Add Record Command
+					New_Version_Post = Models.Version(
+						Device_ID = Device_ID, 
+						Hardware_Version = Kafka_Message.Hardware,
+						Firmware_Version = Kafka_Message.Firmware)
+
+					# Add and Refresh DataBase
+					db = Database.SessionLocal()
+					db.add(New_Version_Post)
+					db.commit()
+					db.refresh(New_Version_Post)
+
+					# Log 
+					print("There is no existing record for this device. Adding record : ", New_Version_Post.Version_ID)
+
+
+				else:
+					print("There is an existing record for this device. Bypassing...")
+
+
+
+
+
+
+
+
+
+
 
 			# Print LOG
 #			print(Kafka_Message)
@@ -44,36 +86,7 @@ def Device_Parser():
 			# Declare db
 #			db = Database.SessionLocal()
 
-			# Handle Data
-#			if Kafka_Message.Firmware != None and Kafka_Message.Hardware != None:
 
-				# Database Query
-#				Version_Query = db.query(Models.Version).filter(
-#					Models.Version.Device_ID.like(Device_ID),
-#					Models.Version.Firmware_Version.like(Kafka_Message.Firmware),
-#					Models.Version.Hardware_Version.like(Kafka_Message.Hardware)).first()
-
-				# Handle Record
-#				if Version_Query == None:
-
-					# Create Add Record Command
-#					New_Version_Post = Models.Version(
-#						Device_ID = Device_ID, 
-#						Hardware_Version = Kafka_Message.Hardware,
-#						Firmware_Version = Kafka_Message.Firmware)
-
-#					# Add and Refresh DataBase
-#					db = Database.SessionLocal()
-#					db.add(New_Version_Post)
-#					db.commit()
-#					db.refresh(New_Version_Post)
-
-					# Log 
-#					print("There is no existing record for this device. Adding record : ", New_Version_Post.Version_ID)
-
-
-#				else:
-#					print("There is an existing record for this device. Bypassing...")
 
 			# Close Database
 #			db.close()
