@@ -1,5 +1,6 @@
 # Import Libraries
 import logging, coloredlogs
+from humanfriendly import format_pretty_table
 
 # Set Log Options
 logging.basicConfig(filename='Log/Service.LOG', level=logging.INFO)
@@ -21,11 +22,17 @@ def Database_DisConnect():
 # LOG Kafka Header
 def Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Kafka_Topic, Kafka_Partition, Kafka_Offset):
 
+	# Define Headers
+	Headers = ["Command", "Device ID", "Client IP", "Device Time"]
+	Values = [Command, Device_ID, Device_IP, Device_Time]
+
 	# Print LOG
-	Service_Logger.debug(f"Command     : '{Command}'")
-	Service_Logger.debug(f"Device ID   : '{Device_ID}'")
-	Service_Logger.debug(f"Client IP   : '{Device_IP}'")
-	Service_Logger.debug(f"Device Time : '{Device_Time}'")
+	print(format_pretty_table(Headers, Values))
+
+#	Service_Logger.debug(f"Command     : '{Command}'")
+#	Service_Logger.debug(f"Device ID   : '{Device_ID}'")
+#	Service_Logger.debug(f"Client IP   : '{Device_IP}'")
+#	Service_Logger.debug(f"Device Time : '{Device_Time}'")
 
 
 #	print("................................................................................")
