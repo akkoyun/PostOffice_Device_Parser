@@ -39,6 +39,7 @@ def Device_Parser():
 			class Variables:
 				Module_ID = 0		# Module ID 
 				IoT_Module_ID = 0	# GSM Module ID
+				SIM_ID = 0			# SIM ID
 
 			# ------------------------------------------
 
@@ -243,7 +244,54 @@ def Device_Parser():
 
 			# ------------------------------------------
 
+			# Parse IoT SIM
+			if Kafka_Message.IoT.GSM.Operator.ICCID is not None:
 
+				# Define DB
+				DB_SIM = Database.SessionLocal()
+
+				# Database Query
+				IoT_SIM_Query = DB_SIM.query(Models.SIM).filter(
+					Models.SIM.ICCID.like(Kafka_Message.IoT.GSM.Operator.ICCID),
+					Models.SIM.Operator_ID == Kafka_Message.IoT.GSM.Operator.Code).first()
+
+				# Handle Record
+				if not IoT_SIM_Query:
+
+					# Create Add Record Command
+					New_IoT_SIM_Post = Models.SIM(
+						Device_ID = Device_ID,
+						ICCID = Kafka_Message.IoT.GSM.Operator.ICCID,
+						Operator_ID = Kafka_Message.IoT.GSM.Operator.Code)
+
+					# Add and Refresh DataBase
+					DB_SIM.add(New_IoT_SIM_Post)
+					DB_SIM.commit()
+					DB_SIM.refresh(New_IoT_SIM_Post)
+
+					# Set Variable
+					Variables.SIM_ID = New_IoT_SIM_Post.SIM_ID
+
+					# Log
+					LOG.Service_Logger.debug(f"New SIM detected, recording... [{New_IoT_SIM_Post.SIM_ID}]")
+
+				else:
+
+					# Set Variable
+					for X in np.array(list(IoT_SIM_Query.__dict__.items())):
+						if X[0] == "SIM_ID":
+							Variables.SIM_ID = X[1]
+							break
+
+					# LOG
+					LOG.Service_Logger.warning(f"SIM allready recorded [{Variables.SIM_ID}], bypassing...")
+
+			else:
+
+				# LOG
+				LOG.Service_Logger.warning("There is no SIM data, bypassing...")
+
+			# ------------------------------------------
 
 
 
