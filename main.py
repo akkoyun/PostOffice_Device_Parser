@@ -67,7 +67,7 @@ def Device_Parser():
 			else:
 
 				# Set Variable
-				Variables.Module_ID = np.array(list(Query_Module.__dict__.items()))[1,1]
+				Variables.Module_ID = np.array(list(Query_Module.__dict__.items()))[5,1]
 				print(np.array(list(Query_Module.__dict__.items())))
 
 				# LOG
