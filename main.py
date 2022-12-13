@@ -228,7 +228,7 @@ def Device_Parser():
 				DB_Location.refresh(New_IoT_Location_Post)
 
 				# LOG
-				LOG.Service_Logger.debug(f"New location detected, recording... [{New_IoT_Location_Post.Location_ID}]")
+				LOG.Service_Logger.debug(f"New location detected [{Kafka_Message.IoT.GSM.Operator.LAC} - {Kafka_Message.IoT.GSM.Operator.Cell_ID}], recording... [{New_IoT_Location_Post.Location_ID}]")
 
 			else:
 
