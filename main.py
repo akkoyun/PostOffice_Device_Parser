@@ -34,37 +34,59 @@ def Device_Parser():
 			LOG.Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Message.topic, Message.partition, Message.offset)
 			LOG.Line()
 
+			# Declare Variables
+			Module_ID = 0
+
 			# Parse Device
 			if Kafka_Message.Info != None:
 
 				# Define DB
-				db = Database.SessionLocal()
+				DB_Device = Database.SessionLocal()
 
 				# Database Query
-				IoT_Module_Query = db.query(Models.Module).filter(Models.Module.Device_ID.like(Device_ID)).first()
+				IoT_Module_Query = DB_Device.query(Models.Module).filter(Models.Module.Device_ID.like(Device_ID)).first()
 
 				# Handle Record
-				if IoT_Module_Query == None:
+				if not IoT_Module_Query:
 
 					# Create Add Record Command
-					New_Module = Models.Module(
-						Device_ID = Device_ID,
-						Device_Development = True,
-						Module_Name = "B100xx")
+					New_Module = Models.Module(Device_ID = Device_ID)
 
 					# Add and Refresh DataBase
-					db.add(New_Module)
-					db.commit()
-					db.refresh(New_Module)
+					DB_Device.add(New_Module)
+					DB_Device.commit()
+					DB_Device.refresh(New_Module)
+
+					# Set Module ID
+					Module_ID = New_Module.Module_ID
 
 					# Log
 					RecordedMessage = "New module detected, recording... [" + str(New_Module.Module_ID) + "]"
 					LOG.Service_Logger.debug(RecordedMessage)
 
 				else:
+
+					# Set Module ID
+					print(DB_Device.execute(IoT_Module_Query).fetchall())
+
+					# LOG
 					LOG.Service_Logger.warning("Module allready recorded, bypassing...")
+
 			else:
+
+				# LOG
 				LOG.Service_Logger.warning("There is no info, bypassing...")
+
+
+
+
+
+
+
+
+
+
+
 
 			# Parse Version
 			if Kafka_Message.Info.Firmware != None and Kafka_Message.Info.Hardware != None:
@@ -138,10 +160,6 @@ def Device_Parser():
 					Models.IoT_Module.Manufacturer_ID == Kafka_Message.IoT.GSM.Module.Manufacturer,
 					Models.IoT_Module.Model_ID == Kafka_Message.IoT.GSM.Module.Model).first()
 
-				# Refresh DataBase
-				A = db.get()
-				print(A)
-
 				# Handle Record
 				if IoT_Module_Query == None:
 
@@ -166,19 +184,6 @@ def Device_Parser():
 					LOG.Service_Logger.warning("IoT module allready recorded, bypassing...")
 			else:
 				LOG.Service_Logger.warning("There is no IoT module data, bypassing...")
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 			# Parse IoT Location
 			if Kafka_Message.IoT.GSM.Operator.LAC is not None and Kafka_Message.IoT.GSM.Operator.Cell_ID is not None:
