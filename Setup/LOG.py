@@ -22,10 +22,10 @@ def Database_DisConnect():
 def Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Kafka_Topic, Kafka_Partition, Kafka_Offset):
 
 	# Print LOG
-	Service_Logger.info("................................................................................")
-	Service_Logger.info("Command     : "), Service_Logger.debug(Command)
-
-	Service_Logger.info("................................................................................")
+	Service_Logger.handle("Command     : "), Service_Logger.debug(Command)
+	Service_Logger.handle("Device ID   : "), Service_Logger.debug(Device_ID)
+	Service_Logger.handle("Client IP   : "), Service_Logger.debug(Device_IP)
+	Service_Logger.handle("Device Time : "), Service_Logger.debug(Device_Time)
 
 
 #	print("................................................................................")
