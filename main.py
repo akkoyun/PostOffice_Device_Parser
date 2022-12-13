@@ -55,9 +55,10 @@ def Device_Parser():
 
 			# Database Query
 			Query_Module = DB_Module.query(Models.Module).filter(Models.Module.Device_ID.like(Device_ID)).first()
+			DB_Module.commit()
+			DB_Module.refresh(Query_Module)
 
-			A = Schema.Module(Query_Module)
-			print(A)
+			print(Query_Module)
 
 			# Handle Record
 			if not Query_Module:
