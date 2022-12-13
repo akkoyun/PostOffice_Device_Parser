@@ -155,14 +155,10 @@ def Device_Parser():
 					db.commit()
 					db.refresh(New_IoT_Module)
 
-					# Get IoT Module ID
-					IoT_Module_ID_New = New_IoT_Module.Module_ID
-
 					# Log
 					RecordedMessage = "Detected new IoT module, recording... [" + str(New_IoT_Module.Module_ID) + "]"
 					LOG.Service_Logger.debug(RecordedMessage)
 				else:
-					IoT_Module_ID_Existing = IoT_Module_Query.Module_ID
 					LOG.Service_Logger.warning("IoT module allready recorded, bypassing...")
 			else:
 				LOG.Service_Logger.warning("There is no IoT module data, bypassing...")
@@ -170,10 +166,10 @@ def Device_Parser():
 
 
 
-			if IoT_Module_ID_New is None:
-				IoT_Module_ID = IoT_Module_ID_Existing
+			if New_IoT_Module.Module_ID is None:
+				IoT_Module_ID = IoT_Module_Query.Module_ID
 			else:
-				IoT_Module_ID = IoT_Module_ID_New
+				IoT_Module_ID = New_IoT_Module.Module_ID
 
 			print(IoT_Module_ID)
 
