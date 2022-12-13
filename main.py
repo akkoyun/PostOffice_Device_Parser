@@ -59,7 +59,7 @@ def Device_Parser():
 			DB_Module.refresh(Query_Module)
 
 			aa = np.array(list(Query_Module.__dict__.items()))
-			print(aa)
+			print(aa[1])
 
 			# Handle Record
 			if not Query_Module:
