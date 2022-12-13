@@ -34,7 +34,7 @@ def Device_Parser():
 			LOG.Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Message.topic, Message.partition, Message.offset)
 			LOG.Line()
 
-			# Handle Device
+			# Parse Device
 			if Kafka_Message.Info != None:
 
 				# Define DB
@@ -67,7 +67,7 @@ def Device_Parser():
 			else:
 				LOG.Service_Logger.warning("There is no info, bypassing...")
 
-			# Handle Version
+			# Parse Version
 			if Kafka_Message.Info.Firmware != None and Kafka_Message.Info.Hardware != None:
 
 				# Define DB
@@ -103,23 +103,32 @@ def Device_Parser():
 			else:
 				LOG.Service_Logger.warning("There is no version info, bypassing...")
 
+			# Parse IMU Data
+			if Kafka_Message.Info.Temperature is not None and Kafka_Message.Info.Humidity is not None:
+
+				# Create Add Record Command
+				New_IMU_Post = Models.IMU(
+					Device_ID = Device_ID,
+					Temperature = Kafka_Message.Info.Temperature,
+					Humidity = Kafka_Message.Info.Humidity)
+
+				# Add and Refresh DataBase
+				db = Database.SessionLocal()
+				db.add(New_IMU_Post)
+				db.commit()
+				db.refresh(New_IMU_Post)
+
+				# Log
+				RecordedMessage = "Detected new IMU data, recording... [" + str(New_IMU_Post.IMU_ID) + "]"
+				LOG.Service_Logger.debug(RecordedMessage)
+			else:
+				LOG.Service_Logger.warning("There is no IMU data, bypassing...")
 
 
 
 
 
 
-
-
-			# Print LOG
-#			print(Kafka_Message)
-#			LOG.Service_Logger.info(Kafka_Message)
-#			print("Hardware Version : ", Kafka_Message.Hardware)
-#			print("Firmware Version : ", Kafka_Message.Firmware)
-#			print("................................................................................")
-
-			# Declare db
-#			db = Database.SessionLocal()
 
 
 
