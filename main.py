@@ -59,7 +59,7 @@ def Device_Parser():
 			DB_Module.refresh(Query_Module)
 
 
-			print(json.loads(Query_Module.__dict__))
+			print(json.dump(Query_Module.__dict__))
 
 			# Handle Record
 			if not Query_Module:
