@@ -34,6 +34,9 @@ def Device_Parser():
 			LOG.Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Message.topic, Message.partition, Message.offset)
 			LOG.Line()
 
+			# LOG
+			print(Kafka_Message)
+
 			# Declare Variables
 			class DB_Variables:
 				Module_ID = 0		# Module ID 
@@ -50,10 +53,10 @@ def Device_Parser():
 
 
 			# Define DB
-			DB_Device = Database.SessionLocal()
+			DB_Module = Database.SessionLocal()
 
 			# Database Query
-			IoT_Module_Query = DB_Device.query(Models.Module).filter(Models.Module.Device_ID.like(Device_ID)).first()
+			IoT_Module_Query = DB_Module.query(Models.Module).filter(Models.Module.Device_ID.like(Device_ID)).first()
 
 			# Handle Record
 			if not IoT_Module_Query:
@@ -62,12 +65,12 @@ def Device_Parser():
 				New_Module = Models.Module(Device_ID = Device_ID)
 
 				# Add and Refresh DataBase
-				DB_Device.add(New_Module)
-				DB_Device.commit()
-				DB_Device.refresh(New_Module)
+				DB_Module.add(New_Module)
+				DB_Module.commit()
+				DB_Module.refresh(New_Module)
 
 				# Close Database
-				DB_Device.close()
+				DB_Module.close()
 
 				# Log
 				RecordedMessage = "New module detected, recording... [" + str(New_Module.Module_ID) + "]"
