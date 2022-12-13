@@ -1,7 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from config.Config import APP_Settings
+from .Config import APP_Settings
+import log_functions as Terminal_LOG
 
 # Define Database Connection
 SQLALCHEMY_DATABASE_URL = f'postgresql://{APP_Settings.POSTOFFICE_DB_USERNAME}:{APP_Settings.POSTOFFICE_DB_PASSWORD}@{APP_Settings.POSTOFFICE_DB_HOSTNAME}:{APP_Settings.POSTOFFICE_DB_PORT}/{APP_Settings.POSTOFFICE_DB_NAME}'
@@ -19,8 +20,8 @@ Base = declarative_base()
 def Create_Database():
 	db = SessionLocal()
 	try:
-#		print("API Log --> Connected to Database")
+		Terminal_LOG.LOG_Database_Connect()
 		yield db
 	finally:
-#		print("API Log --> Connection Closed")
+		Terminal_LOG.LOG_Database_DisConnect
 		db.close()

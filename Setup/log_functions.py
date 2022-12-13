@@ -1,3 +1,26 @@
+# Import Libraries
+import logging
+
+# Set Log Options
+logging.basicConfig(filename='/Log/Service.LOG', level=logging.INFO)
+Service_Logger = logging.getLogger(__name__)
+
+
+# Database Log
+def LOG_Database_Connect():
+	Service_Logger.info(f"API Log --> Connected to Database")
+def LOG_Database_DisConnect():
+	Service_Logger.info(f"API Log --> Connection Closed")
+
+
+
+
+
+
+
+
+
+
 # LOG Kafka Header
 def Log_Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Kafka_Topic, Kafka_Partition, Kafka_Offset):
 
