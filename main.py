@@ -64,6 +64,7 @@ def Device_Parser():
 			M = object_as_dict(Query_Module)
 			print(M)
 			print(type(M))
+			print(json.dumps(M.__dict__))
 
 			# Handle Record
 			if not Query_Module:
