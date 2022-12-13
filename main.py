@@ -132,13 +132,12 @@ def Device_Parser():
 
 				# Database Query
 				IoT_Module_Query = db.query(Models.IoT_Module).filter(
-					Models.IoT_Module.Device_ID.like(Device_ID),
 					Models.IoT_Module.Module_Firmware.like(Kafka_Message.Firmware),
 					Models.IoT_Module.Module_IMEI.like(Kafka_Message.IMEI),
 					Models.IoT_Module.Module_Serial.like(Kafka_Message.Serial),
 					Models.IoT_Module.Manufacturer_ID == Kafka_Message.Manufacturer,
 					Models.IoT_Module.Model_ID == Kafka_Message.Model).first()
-
+	
 				# Handle Record
 				if IoT_Module_Query == None:
 
