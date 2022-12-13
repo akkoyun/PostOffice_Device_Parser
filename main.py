@@ -202,8 +202,8 @@ def Device_Parser():
 
 					# Create Add Record Command
 					New_IoT_SIM_Post = Models.SIM(
-						ICCID = Kafka_Message.IoT.GSM.Operator.ICCID,
 						Device_ID = Device_ID,
+						ICCID = Kafka_Message.IoT.GSM.Operator.ICCID,
 						Operator_ID = Kafka_Message.IoT.GSM.Operator.Code)
 
 					# Add and Refresh DataBase
