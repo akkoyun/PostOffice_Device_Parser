@@ -225,13 +225,16 @@ def Device_Parser():
 				# Define DB
 				db = Database.SessionLocal()
 
-				# Database Query
-				IoT_Existing_SIM_Query = db.query(Models.SIM).filter(
-					Models.SIM.ICCID.like(Kafka_Message.IoT.GSM.Operator.ICCID),
-					Models.SIM.Device_ID.like(Device_ID)).first()
+				# Query SIM
+				if Kafka_Message.IoT.GSM.Operator.ICCID is not None:
 
-				# Refresh DataBase
-				db.refresh(IoT_Existing_SIM_Query)
+					# Database Query
+					IoT_Existing_SIM_Query = db.query(Models.SIM).filter(
+						Models.SIM.ICCID.like(Kafka_Message.IoT.GSM.Operator.ICCID),
+						Models.SIM.Device_ID.like(Device_ID)).first()
+
+					# Refresh DataBase
+					db.refresh(IoT_Existing_SIM_Query)
 
 				# Handle SIM
 				if IoT_Existing_SIM_Query is not None:
