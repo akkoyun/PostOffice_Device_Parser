@@ -244,7 +244,7 @@ def Device_Parser():
 							Device_ID = Device_ID,
 							SIM_ID = IoT_Existing_SIM_Query.SIM_ID,
 							RSSI = Kafka_Message.IoT.GSM.Operator.RSSI,
-							Device_IP = Kafka_Message.IoT.GSM.Operator.IP,
+							Device_IP = Device_IP,
 							Connection_Time = Kafka_Message.IoT.GSM.Operator.ConnTime,
 							Data_Size = len(Message.value))
 
