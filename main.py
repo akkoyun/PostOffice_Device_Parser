@@ -66,13 +66,8 @@ def Device_Parser():
 					LOG.Service_Logger.debug(RecordedMessage)
 
 				else:
-
-					# Log 
 					LOG.Service_Logger.warning("Version allready recorded, bypassing...")
-			
 			else:
-
-				# Log 
 				LOG.Service_Logger.warning("There is no version info, bypassing...")
 
 
@@ -85,7 +80,7 @@ def Device_Parser():
 
 			# Print LOG
 #			print(Kafka_Message)
-			LOG.Service_Logger.info(Kafka_Message)
+#			LOG.Service_Logger.info(Kafka_Message)
 #			print("Hardware Version : ", Kafka_Message.Hardware)
 #			print("Firmware Version : ", Kafka_Message.Firmware)
 #			print("................................................................................")
