@@ -69,7 +69,7 @@ def Device_Parser():
 
 				# Set Variable
 				Module_Array = np.array(list(Query_Module.__dict__.items()))
-				aa = Module_Array.index("Module_ID")
+				aa = Module_Array
 				print(aa)
 
 				# LOG
