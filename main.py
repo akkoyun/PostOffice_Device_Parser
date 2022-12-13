@@ -14,10 +14,6 @@ Kafka_Consumer = KafkaConsumer('Device', bootstrap_servers=f"{APP_Settings.POSTO
 # Boot Log Message
 LOG.Service_Start()
 
-def object_as_dict(obj):
-    return {c.key: getattr(obj, c.key)
-            for c in inspect(obj).mapper.column_attrs}
-
 # Parser Function
 def Device_Parser():
 
@@ -60,11 +56,7 @@ def Device_Parser():
 			# Database Query
 			Query_Module = DB_Module.query(Models.Module).filter(Models.Module.Device_ID.like(Device_ID)).first()
 
-			print(type(Query_Module))
-			M = object_as_dict(Query_Module)
-			print(M)
-			print(type(M))
-			print(json.dumps(M))
+			print(Query_Module[1])
 
 			# Handle Record
 			if not Query_Module:
