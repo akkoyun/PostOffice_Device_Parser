@@ -189,7 +189,7 @@ def Device_Parser():
 
 				# Define DB
 				db = Database.SessionLocal()
-
+				print(Kafka_Message.IoT.GSM.Operator)
 				# Database Query
 				IoT_SIM_Query = db.query(Models.SIM).filter(
 					Models.SIM.ICCID.like(Kafka_Message.IoT.GSM.Operator.ICCID)
