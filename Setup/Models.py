@@ -119,6 +119,7 @@ class SIM(Base):
 
 	# Define Colomns
 	SIM_ID = Column(Integer, primary_key=True, nullable=False)
+	Device_ID = Column(String, nullable=False)
 	ICCID = Column(String, nullable=False)
 	Operator_ID = Column(Integer, nullable=False)
 	GSM_Number = Column(String, nullable=True)
