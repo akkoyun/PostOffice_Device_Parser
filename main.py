@@ -184,6 +184,35 @@ def Device_Parser():
 			else:
 				LOG.Service_Logger.warning("There is no location data, bypassing...")
 
+			# Parse IoT SIM
+			if Kafka_Message.IoT.GSM.Operator is not None:
+
+				# Define DB
+				db = Database.SessionLocal()
+
+				# Database Query
+				IoT_SIM_Query = db.query(Models.SIM).filter(
+					Models.SIM.ICCID.like(Kafka_Message.IoT.GSM.Operator.ICCID),
+					Models.SIM.Operator_ID == Kafka_Message.IoT.GSM.Operator.Code).first
+
+				# Handle Record
+				if IoT_SIM_Query == None:
+
+					# Create Add Record Command
+					New_IoT_SIM_Post = Models.SIM(
+						ICCID = Kafka_Message.IoT.GSM.Operator.ICCID,
+						Operator_ID = Kafka_Message.IoT.GSM.Operator.Code)
+
+					# Add and Refresh DataBase
+					db.add(New_IoT_SIM_Post)
+					db.commit()
+					db.refresh(New_IoT_SIM_Post)
+
+				# Log
+				RecordedMessage = "Detected new SIM, recording... [" + str(New_IoT_SIM_Post.SIM_ID) + "]"
+				LOG.Service_Logger.debug(RecordedMessage)
+			else:
+				LOG.Service_Logger.warning("There is no SIM data, bypassing...")
 
 
 
