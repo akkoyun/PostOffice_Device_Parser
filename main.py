@@ -62,7 +62,8 @@ def Device_Parser():
 					db.refresh(New_Version_Post)
 
 					# Log 
-					LOG.Service_Logger.debug("Detected new version, recording... [", str(New_Version_Post.Version_ID), "]")
+					RecordedMessage = "Detected new version, recording... [" + str(New_Version_Post.Version_ID) + "]"
+					LOG.Service_Logger.debug(RecordedMessage)
 
 				else:
 
