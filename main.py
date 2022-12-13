@@ -80,12 +80,13 @@ def Device_Parser():
 			# Commit Message
 			Kafka_Consumer.commit()
 
-			print("--------------------------------------------------------------------------------")
+			# End LOG
+			LOG.Line()
 
 
 	finally:
 		
-		print("Error Accured !!")
+		LOG.Service_Logger.fatal("Error Accured !!")
 
 
 # Handle All Message in Topic
