@@ -223,7 +223,7 @@ def Device_Parser():
 				DB_Location = Database.SessionLocal()
 
 				# Database Query
-				Query_Location = DB_IoT_Module.query(Models.Location).filter(
+				Query_Location = DB_Location.query(Models.Location).filter(
 					Models.Location.Device_ID.like(Device_ID),
 					Models.Location.LAC.like(Kafka_Message.IoT.GSM.Operator.LAC),
 					Models.Location.Cell_ID.like(Kafka_Message.IoT.GSM.Operator.Cell_ID)).first()
