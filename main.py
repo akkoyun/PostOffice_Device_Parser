@@ -41,6 +41,7 @@ def Device_Parser():
 				IoT_Module_ID = 0	# GSM Module ID
 				SIM_ID = 0			# SIM ID
 				IoT_ID = 0			# IoT Device ID
+				Location_ID = 0		# Location ID
 
 			# ------------------------------------------
 
@@ -221,19 +222,39 @@ def Device_Parser():
 				# Define DB
 				DB_Location = Database.SessionLocal()
 
-				# Create Add Record Command
-				New_IoT_Location_Post = Models.Location(
-					Device_ID = Device_ID,
-					LAC = Kafka_Message.IoT.GSM.Operator.LAC,
-					Cell_ID = Kafka_Message.IoT.GSM.Operator.Cell_ID)
+				# Database Query
+				Query_Location = DB_IoT_Module.query(Models.Location).filter(
+					Models.Location.Device_ID.like(Device_ID),
+					Models.Location.LAC.like(Kafka_Message.IoT.GSM.Operator.LAC),
+					Models.Location.Cell_ID.like(Kafka_Message.IoT.GSM.Operator.Cell_ID)).first()
 
-				# Add and Refresh DataBase
-				DB_Location.add(New_IoT_Location_Post)
-				DB_Location.commit()
-				DB_Location.refresh(New_IoT_Location_Post)
+				# Handle Record
+				if not Query_Location:
 
-				# LOG
-				LOG.Service_Logger.debug(f"New location detected [{Kafka_Message.IoT.GSM.Operator.LAC} - {Kafka_Message.IoT.GSM.Operator.Cell_ID}], recording... [{New_IoT_Location_Post.Location_ID}]")
+					# Create Add Record Command
+					New_IoT_Location_Post = Models.Location(
+						Device_ID = Device_ID,
+						LAC = Kafka_Message.IoT.GSM.Operator.LAC,
+						Cell_ID = Kafka_Message.IoT.GSM.Operator.Cell_ID)
+
+					# Add and Refresh DataBase
+					DB_Location.add(New_IoT_Location_Post)
+					DB_Location.commit()
+					DB_Location.refresh(New_IoT_Location_Post)
+
+					# Log
+					LOG.Service_Logger.debug(f"New location detected [{Kafka_Message.IoT.GSM.Operator.LAC} - {Kafka_Message.IoT.GSM.Operator.Cell_ID}], recording... [{New_IoT_Location_Post.Location_ID}]")
+
+				else:
+
+					# Set Variable
+					for X in np.array(list(Query_Location.__dict__.items())):
+						if X[0] == "Location_ID":
+							Variables.Location_ID = X[1]
+							break
+
+					# LOG
+					LOG.Service_Logger.warning(f"Location data allready recorded [{Variables.Location_ID}], bypassing...")
 
 				# Close Database
 				DB_Location.close()
@@ -408,31 +429,6 @@ def Device_Parser():
 
 			# ------------------------------------------
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 			# Commit Message
 			Kafka_Consumer.commit()
 
@@ -449,8 +445,3 @@ def Device_Parser():
 
 # Handle All Message in Topic
 Device_Parser()
-
-
-
-
-
