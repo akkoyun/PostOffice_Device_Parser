@@ -40,6 +40,7 @@ def Device_Parser():
 				Module_ID = 0		# Module ID 
 				IoT_Module_ID = 0	# GSM Module ID
 				SIM_ID = 0			# SIM ID
+				IoT_ID = 0			# IoT Device ID
 
 			# ------------------------------------------
 
@@ -329,6 +330,56 @@ def Device_Parser():
 
 			# ------------------------------------------
 
+			# Parse IoT
+			if Device_ID is not None and Variables.Module_ID is not None:
+
+				# Define DB
+				DB_IoT = Database.SessionLocal()
+
+				# Database Query
+				IoT_Query = DB_IoT.query(Models.IoT).filter(
+					Models.IoT.Device_ID.like(Device_ID),
+					Models.IoT.Module_ID == Variables.Module_ID).first()
+
+				# Handle Record
+				if not IoT_Query:
+
+					# Create Add Record Command
+					New_IoT_Post = Models.IoT(
+						Device_ID = Device_ID,
+						Module_ID = Variables.Module_ID)
+
+					# Add and Refresh DataBase
+					DB_IoT.add(New_IoT_Post)
+					DB_IoT.commit()
+					DB_IoT.refresh(New_IoT_Post)
+
+					# Set Variable
+					Variables.IoT_ID = New_IoT_Post.IoT_ID
+
+					# Log
+					LOG.Service_Logger.debug(f"New Iot Device detected, recording... [{Variables.IoT_ID}]")
+
+				else:
+
+					# Set Variable
+					for X in np.array(list(IoT_Query.__dict__.items())):
+						if X[0] == "IoT_ID":
+							Variables.IoT_ID = X[1]
+							break
+
+					# LOG
+					LOG.Service_Logger.warning(f"IoT device allready recorded [{Variables.IoT_ID}], bypassing...")
+
+				# Close Database
+				DB_IoT.close()
+
+			else:
+
+				# LOG
+				LOG.Service_Logger.warning("There is a IoT device problem, bypassing...")
+
+			# ------------------------------------------
 
 
 
