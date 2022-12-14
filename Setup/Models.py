@@ -15,6 +15,7 @@ class Module(Base):
 	Device_ID = Column(String, nullable=False)
 	Device_Development = Column(Boolean, default=False)
 	Module_Name = Column(String, nullable=True)
+	Last_Online_Time = Column(TIMESTAMP(timezone=True), nullable=True)
 
 # Device Version Table Model
 class Version(Base):

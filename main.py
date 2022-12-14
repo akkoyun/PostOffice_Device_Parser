@@ -1,4 +1,5 @@
 # Import Libraries
+import datetime;
 from Setup import LOG, Database, Schema, Models
 from Setup.Config import APP_Settings
 from kafka import KafkaConsumer
@@ -76,6 +77,10 @@ def Device_Parser():
 					if X[0] == "Module_ID":
 						Variables.Module_ID = X[1]
 						break
+
+				# Database Query
+				Query_Module_Update = DB_Module.query(Models.Module).filter(Models.Module.Device_ID.like(Device_ID)).update({'Last_Online_Time' : datetime.datetime.now()})
+				Query_Module_Update.commit()
 
 				# LOG
 				LOG.Service_Logger.warning(f"Module allready recorded [{Variables.Module_ID}], bypassing...")
