@@ -78,11 +78,6 @@ def Device_Parser():
 						Variables.Module_ID = X[1]
 						break
 
-				# Database Query
-				Update_Time = datetime.datetime.now()
-				Query_Module_Update = DB_Module.query(Models.Module).filter(Models.Module.Device_ID.like(Device_ID)).update({'Last_Online_Time' : Update_Time})
-				Query_Module_Update.commit()
-
 				# LOG
 				LOG.Service_Logger.warning(f"Module allready recorded [{Variables.Module_ID}], bypassing...")
 
