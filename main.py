@@ -373,6 +373,41 @@ def Device_Parser():
 
 			# ------------------------------------------
 
+			# Parse IoT Connection
+			if Kafka_Message.Power.Battery is not None:
+
+				# Define DB
+				DB_Battery = Database.SessionLocal()
+
+				# Create Add Record Command
+				New_Battery_Post = Models.Battery(
+					Device_ID = Device_ID,
+					IV = Kafka_Message.Power.Battery.IV,
+					AC = Kafka_Message.Power.Battery.AC,
+					SOC = Kafka_Message.Power.Battery.SOC,
+					Charge = Kafka_Message.Power.Battery.Charge,
+					T = Kafka_Message.Power.Battery.T,
+					FB = Kafka_Message.Power.Battery.FB,
+					IB = Kafka_Message.Power.Battery.IB)
+
+				# Add and Refresh DataBase
+				DB_Battery.add(New_Battery_Post)
+				DB_Battery.commit()
+				DB_Battery.refresh(New_Battery_Post)
+
+				# Log 
+				LOG.Service_Logger.debug(f"New battery data detected, recording... [{New_Battery_Post.Battery_ID}]")
+
+				# Close Database
+				DB_Battery.close()
+
+			else:
+
+				# Log 
+				LOG.Service_Logger.warning("There is no battery data, bypassing...")
+
+			# ------------------------------------------
+
 
 
 
