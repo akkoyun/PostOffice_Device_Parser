@@ -224,9 +224,7 @@ def Device_Parser():
 
 				# Database Query
 				Query_Location = DB_Location.query(Models.Location).filter(
-					Models.Location.Device_ID.like(Device_ID),
-					Models.Location.LAC.like(Kafka_Message.IoT.GSM.Operator.LAC),
-					Models.Location.Cell_ID.like(Kafka_Message.IoT.GSM.Operator.Cell_ID)).first()
+					Models.Location.Device_ID.like(Device_ID)).order_by(Models.Location.Time_Stamp.desc()).first()
 
 				# Handle Record
 				if not Query_Location:
@@ -249,12 +247,41 @@ def Device_Parser():
 
 					# Set Variable
 					for X in np.array(list(Query_Location.__dict__.items())):
+						if X[0] == "LAC":
+							DB_LAC = X[1]
+							break
+					for X in np.array(list(Query_Location.__dict__.items())):
+						if X[0] == "Cell_ID":
+							DB_Cell_ID = X[1]
+							break
+
+					# Set Variable
+					for X in np.array(list(Query_Location.__dict__.items())):
 						if X[0] == "Location_ID":
 							Variables.Location_ID = X[1]
 							break
 
-					# LOG
-					LOG.Service_Logger.warning(f"Location data allready recorded [{Variables.Location_ID}], bypassing...")
+					# Control for new location
+					if DB_LAC is not Kafka_Message.IoT.GSM.Operator.LAC and DB_Cell_ID is not Kafka_Message.IoT.GSM.Operator.Cell_ID:
+
+						# Create Add Record Command
+						ReNew_IoT_Location_Post = Models.Location(
+							Device_ID = Device_ID,
+							LAC = Kafka_Message.IoT.GSM.Operator.LAC,
+							Cell_ID = Kafka_Message.IoT.GSM.Operator.Cell_ID)
+
+						# Add and Refresh DataBase
+						DB_Location.add(ReNew_IoT_Location_Post)
+						DB_Location.commit()
+						DB_Location.refresh(ReNew_IoT_Location_Post)
+
+						# LOG
+						LOG.Service_Logger.debug(f"Location data updated [{Variables.Location_ID}]")
+
+					else:
+
+						# LOG
+						LOG.Service_Logger.warning(f"Location data allready recorded [{Variables.Location_ID}], bypassing...")
 
 				# Close Database
 				DB_Location.close()
