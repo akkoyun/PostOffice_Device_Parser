@@ -79,8 +79,8 @@ def Device_Parser():
 						break
 
 				# Database Query
-				print(datetime.datetime.now())
-				Query_Module_Update = DB_Module.query(Models.Module).filter(Models.Module.Device_ID.like(Device_ID)).update({'Last_Online_Time' : datetime.datetime.now()})
+				Update_Time = datetime.datetime.now()
+				Query_Module_Update = DB_Module.query(Models.Module).filter(Models.Module.Device_ID.like(Device_ID)).update({'Last_Online_Time' : Update_Time})
 				Query_Module_Update.commit()
 
 				# LOG
