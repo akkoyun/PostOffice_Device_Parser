@@ -261,9 +261,6 @@ def Device_Parser():
 							Variables.Location_ID = X[1]
 							break
 
-					print(DB_LAC, " - ", DB_Cell_ID)
-					print(Kafka_Message.IoT.GSM.Operator.LAC, " - ", Kafka_Message.IoT.GSM.Operator.Cell_ID)
-
 					# Control for new location
 					if DB_LAC != Kafka_Message.IoT.GSM.Operator.LAC or DB_Cell_ID != Kafka_Message.IoT.GSM.Operator.Cell_ID:
 
