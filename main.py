@@ -57,7 +57,9 @@ def Device_Parser():
 			if not Query_Module:
 
 				# Create Add Record Command
-				New_Module = Models.Module(Device_ID = Device_ID)
+				New_Module = Models.Module(
+					Device_ID = Device_ID,
+					Last_Online_Time = datetime.now())
 
 				# Add and Refresh DataBase
 				DB_Module.add(New_Module)
