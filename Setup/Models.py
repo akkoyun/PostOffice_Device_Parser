@@ -24,7 +24,7 @@ class Version(Base):
 
 	# Define Colomns
 	Version_ID = Column(Integer, primary_key=True, nullable=False)
-	Device_ID = Column(String, ForeignKey("Module.Device_ID", ondelete="CASCADE"), nullable=False)
+	Device_ID = Column(String, nullable=False)
 	Hardware_Version = Column(String, nullable=False)
 	Firmware_Version = Column(String, nullable=False)
 	Update_Time = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('now()'))
@@ -38,7 +38,7 @@ class IMU(Base):
 	# Define Colomns
 	IMU_ID = Column(Integer, primary_key=True, nullable=False)
 	Update_Time = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('now()'))
-	Device_ID = Column(String, ForeignKey("Module.Device_ID", ondelete="CASCADE"), nullable=False)
+	Device_ID = Column(String, nullable=False)
 	Temperature = Column(FLOAT, nullable=True)
 	Humidity = Column(FLOAT, nullable=True)
 
