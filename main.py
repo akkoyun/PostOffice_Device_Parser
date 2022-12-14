@@ -265,7 +265,7 @@ def Device_Parser():
 					print(Kafka_Message.IoT.GSM.Operator.LAC, " - ", Kafka_Message.IoT.GSM.Operator.Cell_ID)
 
 					# Control for new location
-					if DB_LAC != Kafka_Message.IoT.GSM.Operator.LAC and DB_Cell_ID != Kafka_Message.IoT.GSM.Operator.Cell_ID:
+					if DB_LAC != Kafka_Message.IoT.GSM.Operator.LAC or DB_Cell_ID != Kafka_Message.IoT.GSM.Operator.Cell_ID:
 
 						# Create Add Record Command
 						ReNew_IoT_Location_Post = Models.Location(
