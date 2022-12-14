@@ -29,6 +29,7 @@ def Device_Parser():
 			Device_ID = Message.headers[1][1].decode('ASCII')
 			Device_Time = Message.headers[2][1].decode('ASCII')
 			Device_IP = Message.headers[3][1].decode('ASCII')
+			Size = Message.headers[4][1].decode('ASCII')
 
 			# Print LOG
 			LOG.Service_Logger.debug("--------------------------------------------------------------------------------")
@@ -358,7 +359,7 @@ def Device_Parser():
 					RSSI = Kafka_Message.IoT.GSM.Operator.RSSI,
 					Device_IP = Device_IP,
 					Connection_Time = Kafka_Message.IoT.GSM.Operator.ConnTime,
-					Data_Size = len(Message.value))
+					Data_Size = Size)
 
 				# Add and Refresh DataBase
 				DB_Connection.add(New_IoT_Connection_Post)
