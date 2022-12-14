@@ -80,7 +80,7 @@ def Device_Parser():
 
 				# Update Online Time
 				setattr(Query_Module, 'Last_Online_Time', datetime.now())
-				Query_Module.commit()
+				DB_Module.commit()
 
 				# LOG
 				LOG.Service_Logger.warning(f"Module allready recorded [{Variables.Module_ID}], bypassing...")
