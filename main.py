@@ -40,6 +40,7 @@ def Device_Parser():
 				Device_Time = Message.headers[2][1].decode('ASCII')
 				Device_IP = Message.headers[3][1].decode('ASCII')
 				Size = Message.headers[4][1].decode('ASCII')
+				Buffer_ID = int(Message.headers[5][1].decode('ASCII'))
 
 			# Declare Variables
 			class Variables:
@@ -474,6 +475,24 @@ def Device_Parser():
 
 				# Log 
 				Service_Logger.warning("There is no battery data, bypassing...")
+
+			# ------------------------------------------
+
+			# Define DB
+			DB_Buffer = Database.SessionLocal()
+
+			# Database Query
+			Buffer_Query = DB_Buffer.query(Models.Incoming_Buffer).filter(Models.Incoming_Buffer.Buffer_ID == Headers.Buffer_ID).first()
+
+			# Update Online Time
+			setattr(Buffer_Query, 'Buffer_ID', True)
+			DB_Buffer.commit()
+
+			# LOG
+			Service_Logger.debug(f"Module raw table updated...")
+
+			# Close Database
+			DB_Buffer.close()
 
 			# ------------------------------------------
 
