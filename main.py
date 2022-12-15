@@ -1,10 +1,18 @@
 # Import Libraries
 from datetime import datetime
-from Setup import LOG, Database, Schema, Models
+from Setup import Database, Schema, Models
 from Setup.Config import APP_Settings
 from kafka import KafkaConsumer
+import logging, coloredlogs
 import numpy as np
 import json
+
+# Set Log Options
+Service_Logger = logging.getLogger(__name__)
+logging.basicConfig(filename='Log/Service.LOG', level=logging.INFO, format='%(asctime)s - %(message)s')
+
+# Set Log Colored
+coloredlogs.install(level='DEBUG', logger=Service_Logger)
 
 # Create DB Models
 Database.Base.metadata.create_all(bind=Database.DB_Engine)
@@ -13,7 +21,7 @@ Database.Base.metadata.create_all(bind=Database.DB_Engine)
 Kafka_Consumer = KafkaConsumer('Device', bootstrap_servers=f"{APP_Settings.POSTOFFICE_KAFKA_HOSTNAME}:{APP_Settings.POSTOFFICE_KAFKA_PORT}", group_id="Data_Consumer", auto_offset_reset='earliest', enable_auto_commit=False)
 
 # Boot Log Message
-LOG.Service_Start()
+Service_Logger.info("API Log --> Service Started.")
 
 # Parser Function
 def Device_Parser():
@@ -26,16 +34,12 @@ def Device_Parser():
 			Kafka_Message = Schema.IoT_Data_Pack_Device(**json.loads(Message.value.decode()))
 
 			# Handle Headers
-			Command = Message.headers[0][1].decode('ASCII')
-			Device_ID = Message.headers[1][1].decode('ASCII')
-			Device_Time = Message.headers[2][1].decode('ASCII')
-			Device_IP = Message.headers[3][1].decode('ASCII')
-			Size = Message.headers[4][1].decode('ASCII')
-
-			# Print LOG
-			LOG.Service_Logger.debug("--------------------------------------------------------------------------------")
-			LOG.Kafka_Header(Command, Device_ID, Device_IP, Device_Time, Message.topic, Message.partition, Message.offset)
-			LOG.Service_Logger.debug("--------------------------------------------------------------------------------")
+			class Headers:
+				Command = Message.headers[0][1].decode('ASCII')
+				Device_ID = Message.headers[1][1].decode('ASCII')
+				Device_Time = Message.headers[2][1].decode('ASCII')
+				Device_IP = Message.headers[3][1].decode('ASCII')
+				Size = Message.headers[4][1].decode('ASCII')
 
 			# Declare Variables
 			class Variables:
@@ -45,20 +49,28 @@ def Device_Parser():
 				IoT_ID = 0			# IoT Device ID
 				Location_ID = 0		# Location ID
 
+			# Print LOG
+			Service_Logger.debug("--------------------------------------------------------------------------------")
+			Service_Logger.debug(f"Command     : '{Headers.Command}'")
+			Service_Logger.debug(f"Device ID   : '{Headers.Device_ID}'")
+			Service_Logger.debug(f"Client IP   : '{Headers.Device_IP}'")
+			Service_Logger.debug(f"Device Time : '{Headers.Device_Time}'")
+			Service_Logger.debug("--------------------------------------------------------------------------------")
+
 			# ------------------------------------------
 
 			# Define DB
 			DB_Module = Database.SessionLocal()
 
 			# Database Query
-			Query_Module = DB_Module.query(Models.Module).filter(Models.Module.Device_ID.like(Device_ID)).first()
+			Query_Module = DB_Module.query(Models.Module).filter(Models.Module.Device_ID.like(Headers.Device_ID)).first()
 
 			# Handle Record
 			if not Query_Module:
 
 				# Create Add Record Command
 				New_Module = Models.Module(
-					Device_ID = Device_ID,
+					Device_ID = Headers.Device_ID,
 					Last_Online_Time = datetime.now())
 
 				# Add and Refresh DataBase
@@ -70,7 +82,7 @@ def Device_Parser():
 				Variables.Module_ID = New_Module.Module_ID
 
 				# Log
-				LOG.Service_Logger.debug(f"New module detected, recording... [{New_Module.Module_ID}]")
+				Service_Logger.debug(f"New module detected, recording... [{New_Module.Module_ID}]")
 
 			else:
 
@@ -85,7 +97,7 @@ def Device_Parser():
 				DB_Module.commit()
 
 				# LOG
-				LOG.Service_Logger.warning(f"Module allready recorded [{Variables.Module_ID}], bypassing...")
+				Service_Logger.warning(f"Module allready recorded [{Variables.Module_ID}], bypassing...")
 
 			# Close Database
 			DB_Module.close()
@@ -100,7 +112,7 @@ def Device_Parser():
 
 				# Database Query
 				Query_Version = DB_Version.query(Models.Version).filter(
-					Models.Version.Device_ID.like(Device_ID),
+					Models.Version.Device_ID.like(Headers.Device_ID),
 					Models.Version.Firmware_Version.like(Kafka_Message.Info.Firmware),
 					Models.Version.Hardware_Version.like(Kafka_Message.Info.Hardware)).first()
 
@@ -109,7 +121,7 @@ def Device_Parser():
 
 					# Create Add Record Command
 					New_Version = Models.Version(
-						Device_ID = Device_ID, 
+						Device_ID = Headers.Device_ID, 
 						Hardware_Version = Kafka_Message.Info.Hardware,
 						Firmware_Version = Kafka_Message.Info.Firmware)
 
@@ -119,12 +131,12 @@ def Device_Parser():
 					DB_Version.refresh(New_Version)
 
 					# Log 
-					LOG.Service_Logger.debug(f"New version detected, recording... [{New_Version.Version_ID}]")
+					Service_Logger.debug(f"New version detected, recording... [{New_Version.Version_ID}]")
 
 				else:
 
 					# LOG
-					LOG.Service_Logger.warning("Version allready recorded, bypassing...")
+					Service_Logger.warning("Version allready recorded, bypassing...")
 
 				# Close Database
 				DB_Version.close()
@@ -132,7 +144,7 @@ def Device_Parser():
 			else:
 
 				# LOG
-				LOG.Service_Logger.warning("There is no version info, bypassing...")
+				Service_Logger.warning("There is no version info, bypassing...")
 
 			# ------------------------------------------
 
@@ -144,7 +156,7 @@ def Device_Parser():
 
 				# Create Add Record Command
 				New_IMU = Models.IMU(
-					Device_ID = Device_ID,
+					Device_ID = Headers.Device_ID,
 					Temperature = Kafka_Message.Info.Temperature,
 					Humidity = Kafka_Message.Info.Humidity)
 
@@ -154,7 +166,7 @@ def Device_Parser():
 				DB_IMU.refresh(New_IMU)
 
 				# Log 
-				LOG.Service_Logger.debug(f"New IMU data detected [{round(Kafka_Message.Info.Temperature, 2)} C / {round(Kafka_Message.Info.Humidity, 2)} %], recording... [{New_IMU.IMU_ID}]")
+				Service_Logger.debug(f"New IMU data detected [{round(Kafka_Message.Info.Temperature, 2)} C / {round(Kafka_Message.Info.Humidity, 2)} %], recording... [{New_IMU.IMU_ID}]")
 
 				# Close Database
 				DB_IMU.close()
@@ -162,7 +174,7 @@ def Device_Parser():
 			else:
 
 				# LOG
-				LOG.Service_Logger.warning("There is no IMU data, bypassing...")
+				Service_Logger.warning("There is no IMU data, bypassing...")
 
 			# ------------------------------------------
 
@@ -201,7 +213,7 @@ def Device_Parser():
 					Variables.IoT_Module_ID = New_IoT_Module.Module_ID
 
 					# Log
-					LOG.Service_Logger.debug(f"New IoT module detected, recording... [{New_IoT_Module.Module_ID}]")
+					Service_Logger.debug(f"New IoT module detected, recording... [{New_IoT_Module.Module_ID}]")
 
 				else:
 
@@ -212,7 +224,7 @@ def Device_Parser():
 							break
 
 					# LOG
-					LOG.Service_Logger.warning(f"IoT module allready recorded [{Variables.IoT_Module_ID}], bypassing...")
+					Service_Logger.warning(f"IoT module allready recorded [{Variables.IoT_Module_ID}], bypassing...")
 
 				# Close Database
 				DB_IoT_Module.close()
@@ -220,7 +232,7 @@ def Device_Parser():
 			else:
 
 				# LOG
-				LOG.Service_Logger.warning("There is no IoT module data, bypassing...")
+				Service_Logger.warning("There is no IoT module data, bypassing...")
 
 			# ------------------------------------------
 
@@ -232,14 +244,14 @@ def Device_Parser():
 
 				# Database Query
 				Query_Location = DB_Location.query(Models.Location).filter(
-					Models.Location.Device_ID.like(Device_ID)).order_by(Models.Location.Time_Stamp.desc()).first()
+					Models.Location.Device_ID.like(Headers.Device_ID)).order_by(Models.Location.Time_Stamp.desc()).first()
 
 				# Handle Record
 				if not Query_Location:
 
 					# Create Add Record Command
 					New_IoT_Location_Post = Models.Location(
-						Device_ID = Device_ID,
+						Device_ID = Headers.Device_ID,
 						LAC = Kafka_Message.IoT.GSM.Operator.LAC,
 						Cell_ID = Kafka_Message.IoT.GSM.Operator.Cell_ID)
 
@@ -249,7 +261,7 @@ def Device_Parser():
 					DB_Location.refresh(New_IoT_Location_Post)
 
 					# Log
-					LOG.Service_Logger.debug(f"New location detected [{Kafka_Message.IoT.GSM.Operator.LAC} - {Kafka_Message.IoT.GSM.Operator.Cell_ID}], recording... [{New_IoT_Location_Post.Location_ID}]")
+					Service_Logger.debug(f"New location detected [{Kafka_Message.IoT.GSM.Operator.LAC} - {Kafka_Message.IoT.GSM.Operator.Cell_ID}], recording... [{New_IoT_Location_Post.Location_ID}]")
 
 				else:
 
@@ -274,7 +286,7 @@ def Device_Parser():
 
 						# Create Add Record Command
 						ReNew_IoT_Location_Post = Models.Location(
-							Device_ID = Device_ID,
+							Device_ID = Headers.Device_ID,
 							LAC = Kafka_Message.IoT.GSM.Operator.LAC,
 							Cell_ID = Kafka_Message.IoT.GSM.Operator.Cell_ID)
 
@@ -284,12 +296,12 @@ def Device_Parser():
 						DB_Location.refresh(ReNew_IoT_Location_Post)
 
 						# LOG
-						LOG.Service_Logger.debug(f"Location data updated [{Variables.Location_ID}]")
+						Service_Logger.debug(f"Location data updated [{Variables.Location_ID}]")
 
 					else:
 
 						# LOG
-						LOG.Service_Logger.warning(f"Location data allready recorded [{Variables.Location_ID}], bypassing...")
+						Service_Logger.warning(f"Location data allready recorded [{Variables.Location_ID}], bypassing...")
 
 				# Close Database
 				DB_Location.close()
@@ -297,7 +309,7 @@ def Device_Parser():
 			else:
 
 				# LOG
-				LOG.Service_Logger.warning("There is no location data, bypassing...")
+				Service_Logger.warning("There is no location data, bypassing...")
 
 			# ------------------------------------------
 
@@ -317,7 +329,7 @@ def Device_Parser():
 
 					# Create Add Record Command
 					New_IoT_SIM_Post = Models.SIM(
-						Device_ID = Device_ID,
+						Device_ID = Headers.Device_ID,
 						ICCID = Kafka_Message.IoT.GSM.Operator.ICCID,
 						Operator_ID = Kafka_Message.IoT.GSM.Operator.Code)
 
@@ -330,7 +342,7 @@ def Device_Parser():
 					Variables.SIM_ID = New_IoT_SIM_Post.SIM_ID
 
 					# Log
-					LOG.Service_Logger.debug(f"New SIM detected, recording... [{New_IoT_SIM_Post.SIM_ID}]")
+					Service_Logger.debug(f"New SIM detected, recording... [{New_IoT_SIM_Post.SIM_ID}]")
 
 				else:
 
@@ -341,7 +353,7 @@ def Device_Parser():
 							break
 
 					# LOG
-					LOG.Service_Logger.warning(f"SIM allready recorded [{Variables.SIM_ID}], bypassing...")
+					Service_Logger.warning(f"SIM allready recorded [{Variables.SIM_ID}], bypassing...")
 
 				# Close Database
 				DB_SIM.close()
@@ -349,7 +361,7 @@ def Device_Parser():
 			else:
 
 				# LOG
-				LOG.Service_Logger.warning("There is no SIM data, bypassing...")
+				Service_Logger.warning("There is no SIM data, bypassing...")
 
 			# ------------------------------------------
 
@@ -361,12 +373,12 @@ def Device_Parser():
 
 				# Create Add Record Command
 				New_IoT_Connection_Post = Models.Connection(
-					Device_ID = Device_ID,
+					Device_ID = Headers.Device_ID,
 					SIM_ID = Variables.SIM_ID,
 					RSSI = Kafka_Message.IoT.GSM.Operator.RSSI,
-					Device_IP = Device_IP,
+					Device_IP = Headers.Device_IP,
 					Connection_Time = Kafka_Message.IoT.GSM.Operator.ConnTime,
-					Data_Size = Size)
+					Data_Size = Headers.Size)
 
 				# Add and Refresh DataBase
 				DB_Connection.add(New_IoT_Connection_Post)
@@ -374,7 +386,7 @@ def Device_Parser():
 				DB_Connection.refresh(New_IoT_Connection_Post)
 
 				# Log 
-				LOG.Service_Logger.debug(f"New connection data detected, recording... [{New_IoT_Connection_Post.Connection_ID}]")
+				Service_Logger.debug(f"New connection data detected, recording... [{New_IoT_Connection_Post.Connection_ID}]")
 
 				# Close Database
 				DB_Connection.close()
@@ -382,7 +394,7 @@ def Device_Parser():
 			else:
 
 				# Log 
-				LOG.Service_Logger.warning("There is no connection data, bypassing...")
+				Service_Logger.warning("There is no connection data, bypassing...")
 
 			# ------------------------------------------
 
@@ -391,7 +403,7 @@ def Device_Parser():
 
 			# Database Query
 			IoT_Query = DB_IoT.query(Models.IoT).filter(
-				Models.IoT.Device_ID.like(Device_ID),
+				Models.IoT.Device_ID.like(Headers.Device_ID),
 				Models.IoT.Module_ID == Variables.Module_ID).first()
 
 			# Handle Record
@@ -399,7 +411,7 @@ def Device_Parser():
 
 				# Create Add Record Command
 				New_IoT_Post = Models.IoT(
-					Device_ID = Device_ID,
+					Device_ID = Headers.Device_ID,
 					Module_ID = Variables.Module_ID)
 
 				# Add and Refresh DataBase
@@ -411,7 +423,7 @@ def Device_Parser():
 				Variables.IoT_ID = New_IoT_Post.IoT_ID
 
 				# Log
-				LOG.Service_Logger.debug(f"New Iot Device detected, recording... [{Variables.IoT_ID}]")
+				Service_Logger.debug(f"New Iot Device detected, recording... [{Variables.IoT_ID}]")
 
 			else:
 
@@ -422,7 +434,7 @@ def Device_Parser():
 						break
 
 				# LOG
-				LOG.Service_Logger.warning(f"IoT device allready recorded [{Variables.IoT_ID}], bypassing...")
+				Service_Logger.warning(f"IoT device allready recorded [{Variables.IoT_ID}], bypassing...")
 
 			# Close Database
 			DB_IoT.close()
@@ -437,7 +449,7 @@ def Device_Parser():
 
 				# Create Add Record Command
 				New_Battery_Post = Models.Battery(
-					Device_ID = Device_ID,
+					Device_ID = Headers.Device_ID,
 					IV = Kafka_Message.Power.Battery.IV,
 					AC = Kafka_Message.Power.Battery.AC,
 					SOC = Kafka_Message.Power.Battery.SOC,
@@ -452,7 +464,7 @@ def Device_Parser():
 				DB_Battery.refresh(New_Battery_Post)
 
 				# Log 
-				LOG.Service_Logger.debug(f"New battery data detected, recording... [{New_Battery_Post.Battery_ID}]")
+				Service_Logger.debug(f"New battery data detected, recording... [{New_Battery_Post.Battery_ID}]")
 
 				# Close Database
 				DB_Battery.close()
@@ -460,7 +472,7 @@ def Device_Parser():
 			else:
 
 				# Log 
-				LOG.Service_Logger.warning("There is no battery data, bypassing...")
+				Service_Logger.warning("There is no battery data, bypassing...")
 
 			# ------------------------------------------
 
@@ -468,14 +480,14 @@ def Device_Parser():
 			Kafka_Consumer.commit()
 
 			# End LOG
-			LOG.Line()
+			Service_Logger.debug("--------------------------------------------------------------------------------")
 			print("")
 			print("")
 
 
 	finally:
 		
-		LOG.Service_Logger.fatal("Error Accured !!")
+		Service_Logger.fatal("Error Accured !!")
 
 # Handle All Message in Topic
 Device_Parser()

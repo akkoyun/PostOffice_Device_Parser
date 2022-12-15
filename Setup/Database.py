@@ -2,7 +2,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from .Config import APP_Settings
-from .LOG import Database_Connect, Database_DisConnect
 
 # Define Database Connection
 SQLALCHEMY_DATABASE_URL = f'postgresql://{APP_Settings.POSTOFFICE_DB_USERNAME}:{APP_Settings.POSTOFFICE_DB_PASSWORD}@{APP_Settings.POSTOFFICE_DB_HOSTNAME}:{APP_Settings.POSTOFFICE_DB_PORT}/{APP_Settings.POSTOFFICE_DB_NAME}'
@@ -20,8 +19,6 @@ Base = declarative_base()
 def Create_Database():
 	db = SessionLocal()
 	try:
-		Database_Connect()
 		yield db
 	finally:
-		Database_DisConnect
 		db.close()
