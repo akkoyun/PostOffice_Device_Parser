@@ -49,7 +49,6 @@ def Device_Parser():
 				SIM_ID = 0			# SIM ID
 				IoT_ID = 0			# IoT Device ID
 				Location_ID = 0		# Location ID
-				Module_Data_Count = 0 
 
 			# Print LOG
 			Service_Logger.debug("--------------------------------------------------------------------------------")
@@ -94,10 +93,6 @@ def Device_Parser():
 				for X in np.array(list(Query_Module.__dict__.items())):
 					if X[0] == "Module_ID":
 						Variables.Module_ID = X[1]
-						break
-				for X in np.array(list(Query_Module.__dict__.items())):
-					if X[0] == "Data_Count":
-						Variables.Module_Data_Count = X[1]
 						break
 
 				# Update Online Time
