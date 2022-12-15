@@ -442,7 +442,7 @@ def Device_Parser():
 
 			# ------------------------------------------
 
-			# Parse IoT Connection
+			# Parse Battery
 			if Kafka_Message.Power.Battery is not None:
 
 				# Define DB
