@@ -477,6 +477,5 @@ def Device_Parser():
 		
 		LOG.Service_Logger.fatal("Error Accured !!")
 
-
 # Handle All Message in Topic
 Device_Parser()
