@@ -485,7 +485,7 @@ def Device_Parser():
 			Buffer_Query = DB_Buffer.query(Models.Incoming_Buffer).filter(Models.Incoming_Buffer.Buffer_ID == Headers.Buffer_ID).first()
 
 			# Update Online Time
-			setattr(Buffer_Query, 'Buffer_ID', 1)
+			setattr(Buffer_Query, 'Parse_Device', True)
 			DB_Buffer.commit()
 
 			# LOG
