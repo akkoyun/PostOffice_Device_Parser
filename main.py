@@ -55,6 +55,7 @@ def Device_Parser():
 			Service_Logger.debug(f"Device ID   : '{Headers.Device_ID}'")
 			Service_Logger.debug(f"Client IP   : '{Headers.Device_IP}'")
 			Service_Logger.debug(f"Device Time : '{Headers.Device_Time}'")
+			Service_Logger.debug(f"Packet Size : '{Headers.Size}'")
 			Service_Logger.debug("--------------------------------------------------------------------------------")
 
 			# ------------------------------------------
