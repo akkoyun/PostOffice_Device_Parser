@@ -32,6 +32,7 @@ class Module(Base):
 	Device_Development = Column(Boolean, default=False)
 	Module_Name = Column(String, nullable=True)
 	Last_Online_Time = Column(TIMESTAMP(timezone=True), nullable=True)
+	Data_Count = Column(Integer, nullable=False)
 
 # Device Version Table Model
 class Version(Base):

@@ -49,6 +49,7 @@ def Device_Parser():
 				SIM_ID = 0			# SIM ID
 				IoT_ID = 0			# IoT Device ID
 				Location_ID = 0		# Location ID
+				Module_Data_Count = 0 
 
 			# Print LOG
 			Service_Logger.debug("--------------------------------------------------------------------------------")
@@ -73,7 +74,8 @@ def Device_Parser():
 				# Create Add Record Command
 				New_Module = Models.Module(
 					Device_ID = Headers.Device_ID,
-					Last_Online_Time = datetime.now())
+					Last_Online_Time = datetime.now(),
+					Data_Count = 1)
 
 				# Add and Refresh DataBase
 				DB_Module.add(New_Module)
@@ -93,9 +95,14 @@ def Device_Parser():
 					if X[0] == "Module_ID":
 						Variables.Module_ID = X[1]
 						break
+				for X in np.array(list(Query_Module.__dict__.items())):
+					if X[0] == "Data_Count":
+						Variables.Module_Data_Count = X[1]
+						break
 
 				# Update Online Time
 				setattr(Query_Module, 'Last_Online_Time', datetime.now())
+				setattr(Query_Module, 'Data_Count', (Variables.Module_ID + 1))
 				DB_Module.commit()
 
 				# LOG
