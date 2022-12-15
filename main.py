@@ -102,7 +102,7 @@ def Device_Parser():
 
 				# Update Online Time
 				setattr(Query_Module, 'Last_Online_Time', datetime.now())
-				setattr(Query_Module, 'Data_Count', (Variables.Module_ID + 1))
+				setattr(Query_Module, 'Data_Count', (Query_Module.Data_Count + 1))
 				DB_Module.commit()
 
 				# LOG
