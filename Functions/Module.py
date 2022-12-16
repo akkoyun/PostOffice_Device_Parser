@@ -1,11 +1,10 @@
 # Import Libraries
-from Setup import Database, Schema, Models
-from Setup.Config import APP_Settings
+from Setup import Database, Models
 from datetime import datetime
 import numpy as np
 
 # Module Parser Function
-async def Module_Parser(Headers, Variables, Service_Logger, ):
+async def Module_Parser(Headers, Variables, Service_Logger):
 
     # Define DB
     DB_Module = Database.SessionLocal()
