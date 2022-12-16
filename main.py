@@ -227,10 +227,7 @@ def Device_Parser():
 				else:
 
 					# Set Variable
-					for X in np.array(list(Query_IoT_Module.__dict__.items())):
-						if X[0] == "Module_ID":
-							Variables.IoT_Module_ID = X[1]
-							break
+					Variables.IoT_Module_ID = List_Finder(Query_IoT_Module, "Module_ID")
 
 					# LOG
 					Service_Logger.warning(f"IoT module allready recorded [{Variables.IoT_Module_ID}], bypassing...")
@@ -275,23 +272,10 @@ def Device_Parser():
 				else:
 
 					# Set Variable
-					for X in np.array(list(Query_Location.__dict__.items())):
-						if X[0] == "LAC":
-							DB_LAC = X[1]
-							break
-					for X in np.array(list(Query_Location.__dict__.items())):
-						if X[0] == "Cell_ID":
-							DB_Cell_ID = X[1]
-							break
-
-					# Set Variable
-					for X in np.array(list(Query_Location.__dict__.items())):
-						if X[0] == "Location_ID":
-							Variables.Location_ID = X[1]
-							break
+					Variables.Location_ID = List_Finder(Query_Location, "Location_ID")
 
 					# Control for new location
-					if DB_LAC != Kafka_Message.IoT.GSM.Operator.LAC or DB_Cell_ID != Kafka_Message.IoT.GSM.Operator.Cell_ID:
+					if List_Finder(Query_Location, "LAC") != Kafka_Message.IoT.GSM.Operator.LAC or List_Finder(Query_Location, "Cell_ID") != Kafka_Message.IoT.GSM.Operator.Cell_ID:
 
 						# Create Add Record Command
 						ReNew_IoT_Location_Post = Models.Location(
@@ -356,10 +340,7 @@ def Device_Parser():
 				else:
 
 					# Set Variable
-					for X in np.array(list(IoT_SIM_Query.__dict__.items())):
-						if X[0] == "SIM_ID":
-							Variables.SIM_ID = X[1]
-							break
+					Variables.SIM_ID = List_Finder(IoT_SIM_Query, "SIM_ID")
 
 					# LOG
 					Service_Logger.warning(f"SIM allready recorded [{Variables.SIM_ID}], bypassing...")
@@ -437,10 +418,7 @@ def Device_Parser():
 			else:
 
 				# Set Variable
-				for X in np.array(list(IoT_Query.__dict__.items())):
-					if X[0] == "IoT_ID":
-						Variables.IoT_ID = X[1]
-						break
+				Variables.IoT_ID = List_Finder(IoT_Query, "IoT_ID")
 
 				# LOG
 				Service_Logger.warning(f"IoT device allready recorded [{Variables.IoT_ID}], bypassing...")
