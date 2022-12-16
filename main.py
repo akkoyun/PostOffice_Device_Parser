@@ -6,7 +6,7 @@ from kafka import KafkaConsumer
 import logging, coloredlogs
 import numpy as np
 import json
-from Functions.Module import Module_Parser
+from Functions.Module import *
 
 # Set Log Options
 Service_Logger = logging.getLogger(__name__)
@@ -62,8 +62,8 @@ def Device_Parser():
 
 			# ------------------------------------------
 
-			Module_Parser(Headers, Variables, Service_Logger)
-
+			print(Module_Parser(Headers, Variables, Service_Logger))
+			print("1")
 
 			# ------------------------------------------
 
