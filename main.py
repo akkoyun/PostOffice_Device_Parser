@@ -23,6 +23,14 @@ Kafka_Consumer = KafkaConsumer('Device', bootstrap_servers=f"{APP_Settings.POSTO
 # Boot Log Message
 Service_Logger.info("API Log --> Service Started.")
 
+# List Finder Function
+def List_Finder(List, Variable):
+	# Set Variable
+	for X in np.array(list(List.__dict__.items())):
+		if X[0] == Variable:
+			return X[1]
+
+
 # Parser Function
 def Device_Parser():
 
@@ -90,10 +98,7 @@ def Device_Parser():
 			else:
 
 				# Set Variable
-				for X in np.array(list(Query_Module.__dict__.items())):
-					if X[0] == "Module_ID":
-						Variables.Module_ID = X[1]
-						break
+				Variables.Module_ID = List_Finder(Query_Module, "Module_ID")
 
 				# Update Online Time
 				setattr(Query_Module, 'Last_Online_Time', datetime.now())
